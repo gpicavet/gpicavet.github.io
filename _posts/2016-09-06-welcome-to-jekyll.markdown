@@ -1,25 +1,109 @@
 ---
 layout: post
-title:  "Welcome to Jekyll!"
+title:  "Getting started with ReactJS and Exoplatform portlet development"
 date:   2016-09-06 17:38:41 +0200
 categories: jekyll update
 ---
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
 
-To add new posts, simply add a file in the `_posts` directory that follows the convention `YYYY-MM-DD-name-of-post.ext` and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.
+Exoplatform comes with a portlet framework called Juzu to build interactive client-side UI. If you're not comfortable with it you may know that Exoplatform does not require specific technology, so you can happily bring your favorite one.  
+If you dont know ReactJS, it is a cool library that makes it easy to develop UI thanks to a component-based model. Easy because there's only few concept to learn.
+Though Javascript is cool for simple projects, it would become painful in enterprise if you dont have the right tools. Fortunately the platform has gained maturity since the last years and you're no more a man vs wild !
 
-Jekyll also offers powerful support for code snippets:
+So this article focus on a simple ReactJS compoent that will display the portal activity stream, we will see how to set up an efficient and robust development environment, and how it integrates with portlet.
 
-{% highlight ruby %}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
+Project sources are available <a href="https://github.com/gpicavet/react-portlet">here</a>
+
+
+In order to efficiently manage JS library dependencies, we will use nodejs and npm. We'll use maven to build and package the portlet part.
+
+In order to reach the robust part, we have to choose a strongly type language. That's the purpose of several language like coffee, typescript, ES2015, which also come with a bunch of syntax improvement. But the common problem is browser support. In order to work with all browsers, we'll have to "transpile" our code to vanilla JS. ReactJS also comes with a syntax called JSX which mix JS and HTML tags, so we'll have to transpile it as well. Babel will be a good guy for that task, and we'll use this time ES2015.
+
+Last thing before we start : If you dont know it, it's also a good way to discover a lightweight and opensource IDE that works well with JS : atom.
+
+* First install Node (which comes with npm) on your system : https://nodejs.org/en/download/
+
+* Create a directory named "react-portlet" and generate a basic package.json file :
+{% highlight shell %}
+npm init
+{% endhighlight %}
+Let the default values for this time :)
+
+* Next install React lib as a runtime dependency :
+{% highlight shell %}
+npm install --save react@15.3.1 react-dom@15.3.1
 {% endhighlight %}
 
-Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
+* Install the babel transpilers as dev dependency :
+{% highlight shell %}
+npm install --save-dev babel-loader babel-core babel-preset-es2015 babel-preset-react
+{% endhighlight %}
 
-[jekyll-docs]: http://jekyllrb.com/docs/home
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-talk]: https://talk.jekyllrb.com/
+* We will need the webpack library in order to gather all our JS modules in a dist file, and to do some "hot rebuild".
+We'll also install the express Http server, in order to quickly test our app in standalone mode.
+{% highlight shell %}
+npm install –save-dev webpack express
+{% endhighlight %}
+
+So here we are, package.json has been updated, and node dependencies installed in "node_modules" directory.
+
+* A word about project structure, it has to be maven-compliant (keep in mind we have to build a portlet!) :
+<pre>
+/
+├─src
+│  ├─main
+│  │  ├─java
+│  │  ├─js
+│  │  ├─webapp
+│  │      ├─META-INF
+│  │      ├─WEB-INF
+│  ├─static
+├─package.json
+├─pom.xml
+</pre>
+
+* Now lets start with the React component. Create a file named "Activities.jsx" in /src/main/js :
+{% highlight Javascript %}
+{% endhighlight %}
+We first simply feed component's state with a static json file, which is a record of the eXo activity stream API. In a further section, we will see how to fetch real data from API.
+
+* Create the index.html in /src/static and declare the React mount tag as a simple div :
+
+* In order to make webpack grabs all modules, declare a file "index.js" in /src/main/js :
+{% highlight Javascript %}
+{% endhighlight %}
+It will create a final "bundle.js" in the directory of your choice. But we want it in the target directory generated by maven
+Finally add the script in index.html :
+
+* declare a minimum webpack config "webpack.config.js" in / :
+{% highlight Javascript %}
+{% endhighlight %}
+
+* To build the app, open package.json and add a node "install" that will chain the following commands :
+It will simply copy our static resources in target/
+Note : in a real project, you should use a build library like gulp to externalize complex build tasks
+{% highlight shell %}
+npm install
+{% endhighlight %}
+
+* Next we create a server.js in /, in order to serve static files :
+
+* To start the app, add a node "start" with the following commands :
+It will start webpack in "watch mode" (ie it automatically rebuilds after a resource modification), and the express server
+{% highlight shell %}
+npm start
+{% endhighlight %}
+
+* Now you can see the result at http://localhost:8080
+
+* Lets replace the static json data with real API call, but it would be interesting to keep testing outside eXo. We could proxy the request to eXo, with basic authentication, but we can also route to the static json file, so it doesn't require starting eXo. It's up to you, but to simplify we'll use 2nd choice.
+First replace with a fetch of API (notice the "promise" syntax)
+Now add this in server.js :
+
+
+* We are ready to start Portlet Part ! We will use the standard java API. Actually I will not detail portlet definition as you can get a sample project here : https://github.com/exo-samples/docs-samples/tree/4.3.x/portlet/js/src/main/webapp
+We have to declare the bundle in gatein-resources.xml
+Add an index.jsp that do the same thing as index.html
+And we now want to build the JS bundle with maven. A simple way is to call webpack in an exec plugin : 
+
+
+* If you want to declare React and other libs as Exo Resources, how to tell webpack to exclude them from dist ? simply declare them as external library in config :
