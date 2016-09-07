@@ -249,9 +249,26 @@ OK we will now package the component in a Portlet.
 
 * index.jsp will be very similar to index.html :
 {% highlight jsp %}
+<div class='react-portlet'>
+  <h2>The React Portlet</h2>
+  <div id="app"></div>
+</div>
 {% endhighlight %}
 
-* But as it's an html fragment, you let exo load js and css. For that we have to declare the bundle.js and main.css in gatein-resources.xml as js modules.
+* But as it's an html fragment, you dont include scripts and let exo load js and css. Instead we declare the bundle.js and main.css in the gatein-resources.xml as js modules :
+{% highlight xml %}
+<portlet>
+  <name>react-portlet</name>
+  <module>
+    <script>
+      <path>/js/bundle.js</path>
+    </script>
+  </module>
+</portlet>
+<portlet-skin>
+  <css-path>/css/main.css</css-path>
+</portlet-skin>
+{% endhighlight %}
 
 * now the build part. When we build the portlet with maven, we also want webpack to build the JS. A simple way is to call webpack inside an exec plugin in the pom.xml:
 {% highlight shell %}
