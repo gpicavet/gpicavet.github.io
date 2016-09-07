@@ -258,7 +258,8 @@ OK we will now package the component in a Portlet.
 mvn clean install
 {% endhighlight %}
 
-* To initialize the npm packages on a clean project with maven, simply define a profile "init" that will exec the command "npm install". Now you can do :
+* To initialize the npm packages on a clean project with maven, dont forget to call "npm install".
+But we can better define a profile "init" that will exec the command automatically :
 {% highlight shell %}
 mvn clean install -Pinit
 {% endhighlight %}
@@ -270,7 +271,7 @@ docker run -p 8080:8080 --name=exo exoplatform/exo-community:latest
 {% endhighlight %}
 Then copy the war to the running container and wait for deployment :
 {% highlight shell %}
-docker cp /tmp/react-portlet.war exo:/opt/exo/current/webapps
+docker cp target/react-portlet.war exo:/opt/exo/current/webapps
 {% endhighlight %}
 
 * Log to exo and create a "test" site
