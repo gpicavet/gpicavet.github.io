@@ -7,26 +7,23 @@ categories: jekyll update
 
 Here is the first post of -i hope- many posts dedicated to web development !
 
-I would like to share a feedback on Exoplatform portal development recently achieved through my job.
+In this article I would like to share a feedback on Exoplatform portal development i'm doing through my job : you'll learn how to set up a simple reactjs/nodejs development stack, to first build a standalone app, and then package that app in a portlet.
 
-Exoplatform comes with a portlet framework called Juzu to build interactive client-side UI. While many developers in my organization masterized several frameworks, they were not very comfortable with it. But thanks to exoplatform design, portlet does not require a specific technology, so We decided to develop frontend with ReactJS.
-If you dont know <a href="https://facebook.github.io/react/">ReactJS</a>, it is a cool javascript/nodejs library that makes it easy to develop Web UI thanks to a component-based model. Easy because there's only few concepts to learn, compared with AngularJS another popular framework.
-Though Javascript is cool for simple projects, it would become painful in enterprise if you dont have the right tools. Fortunately the platform has gained maturity since the last years and you're no more a man vs wild !
+But how did we get to React :) ? Exoplatform comes with a portlet framework called Juzu to build interactive client-side UI. While many developers in my organization masterized several frameworks, they were not very comfortable with it. At that time my office was heavily promoting ReactJS...Beside that, Exoplatform portlet does not require a specific technology to build portlet and you can bring yours !
+If you dont know React, take a look at https://facebook.github.io/react/ first !
 
-This article focus on a simple ReactJS component that display the portal activity stream. We will see how to set up an efficient and robust development environment, and how it integrates with portlet.
+In order to efficiently manage JS library dependencies, we will use nodejs and npm. We'll then use maven to build and package the portlet part.
 
-Project sources are available <a href="https://github.com/gpicavet/react-portlet">in my repo</a>
+Though Javascript is cool for simple projects, javascript is not java : it's more painful to build robust javascript mainly because of its lack of a static, strongly type system. Fortunately some standards has emerged from the mess since a few years !
+You can now use languages like coffeescript, typescript, ES2015, which also come with syntax improvements. But, except es2015 which is future standard, these languages would not execute in browser, and for es2015 it's not supported evewhere. ReactJS also comes with a syntax called JSX which mix JS and HTML tags, so we'll have to transpile it as well. Babel will be a good guy for that task, and we'll use this time ES2015.
 
+It's time to open your IDE, If you dont have one try <a href="https://atom.io/">Atom</a>. It is lightweight and opensource and works well with JS. Dont forget to install JSX plugin !
 
-In order to efficiently manage JS library dependencies, we will use nodejs and npm. We'll use maven to build and package the portlet part.
+# the nodejs stack and standalone application
 
-In order to reach the robust part, we have to choose a strongly type language. That's the purpose of several language like coffeescript, typescript, ES2015, which also come with a bunch of syntax improvement. But the common problem is browser support. In order to work with all browsers, we'll have to "transpile" our code to vanilla JS. ReactJS also comes with a syntax called JSX which mix JS and HTML tags, so we'll have to transpile it as well. Babel will be a good guy for that task, and we'll use this time ES2015.
+* As said, the stack is based on Node. First Install it on your system : https://nodejs.org/en/download/. It will come with npm, that will allow us to install js packages (like maven).
 
-One last thing before we start : If you dont have one, it's a good way to look at a lightweight and opensource IDE that works well with JS : <a href="https://atom.io/">Atom</a>.
-
-* Now you can install Node (which comes with npm) on your system : https://nodejs.org/en/download/
-
-* Create a directory named "react-portlet" and generate a basic package.json file :
+* Create a directory named "react-portlet" and generate a starting package.json file :
 {% highlight shell %}
 npm init
 {% endhighlight %}
@@ -227,14 +224,70 @@ Time: 4068ms
 bundle.js.map  861 kB       0  [emitted]  main
     + 173 hidden modules
 {% endhighlight %}
+Look at the size... don't worry it is a not optimized yet !
+The map file will map source lines from the generated bundle code to the original es2015 file ! It will be downloaded by browser when you click in console.
 
-* Now you can see the result at http://localhost:8080
+* To see the result : http://localhost:8080
 
+* When you're ready to release, you can add the following part in webpack config in order to generate a lighter file (and to disable React dev mode):
+{% highlight javascript %}
+plugins: [
+  new webpack.DefinePlugin({
+    'process.env': {
+      'NODE_ENV': JSON.stringify('production')
+    }
+  })
+]
+{% endhighlight %}
+Note : you can still debug in original files as map file is also updated.
 
-* We are ready to start Portlet Part ! We will use the standard java API. Actually I will not detail portlet definition as you can get a sample project here : https://github.com/exo-samples/docs-samples/tree/4.3.x/portlet/js/src/main/webapp
-We have to declare the bundle in gatein-resources.xml
-Add an index.jsp that do the same thing as index.html
-And we now want to build the JS bundle with maven. A simple way is to call webpack in an exec plugin :
+# Portlet Integration
 
+OK we will now package the component in a Portlet.
 
-* If you want to declare React and other libs as Exo Resources, how to tell webpack to exclude them from dist ? simply declare them as external library in config :
+* To get started, you can pick resources in the sample available here : https://github.com/exo-samples/docs-samples/tree/4.3.x/portlet/js. It's a simple javax Portlet that forward to an index.jsp (the view of the portlet).
+
+* index.jsp will be very similar to index.html :
+{% highlight jsp %}
+{% endhighlight %}
+
+* But as it's an html fragment, you let exo load js and css. For that we have to declare the bundle.js and main.css in gatein-resources.xml as js modules.
+
+* now the build part. When we build the portlet with maven, we also want webpack to build the JS. A simple way is to call webpack inside an exec plugin in the pom.xml:
+{% highlight shell %}
+mvn clean install
+{% endhighlight %}
+
+* To initialize the npm packages on a clean project with maven, simply define a profile "init" that will exec the command "npm install". Now you can do :
+{% highlight shell %}
+mvn clean install -Pinit
+{% endhighlight %}
+
+* To deploy on exo, simply copy the target/react-portlet.war in webapps dir.
+Note : you can use Docker to easily get and run the latest exo distribution :
+{% highlight shell %}
+docker run -p 8080:8080 --name=exo exoplatform/exo-community:latest
+{% endhighlight %}
+Then copy the war to the running container and wait for deployment :
+{% highlight shell %}
+docker cp /tmp/react-portlet.war exo:/opt/exo/current/webapps
+{% endhighlight %}
+
+* Log to exo and create a "test" site
+
+* Go to the site, edit page layout and add the portlet. You should see that result :
+
+# Going further :
+
+* When you have several portlet, you'll want to share React lib. Simply declare it as a module in a theme extension.
+Then you'll have to tell webpack to exclude React from dist and provided as JS module. Simply declare it as external library in config :
+{% highlight javascript %}
+external
+{
+    externals: {
+        "react": "react"
+    }
+}
+{% endhighlight %}
+
+* The stack can be expanded with unit-test lib. As an example, we were using Mocha to write tests, Phantomjs as a runtime platform and Istanbul as a coverage tool.
