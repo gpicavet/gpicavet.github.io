@@ -29,10 +29,11 @@ npm init
 {% endhighlight %}
 Let the default values for this time :)
 
-* Next install React lib as a runtime dependency :
+* Next install the React libs, plus moment to deal with date format later :
 {% highlight shell %}
-npm install --save react@15.3.1 react-dom@15.3.1
+npm install --save react@15.3.1 react-dom@15.3.1 moment
 {% endhighlight %}
+Note : react has a core part and a specific lib to render to DOM
 
 * Install the babel transpilers as dev dependency :
 {% highlight shell %}
@@ -45,7 +46,8 @@ We'll also install the express Http server, in order to quickly test our app in 
 npm install –save-dev webpack express
 {% endhighlight %}
 
-So here we are, package.json has been updated, and node dependencies installed in "node_modules" directory.
+At this point, package.json has been updated (with --save), and node dependencies installed in "node_modules" directory.
+package.json must be added to version control so anyone can build your project.
 
 * A word about project structure, it has to be maven-compliant (keep in mind we have to build a portlet!) :
 <pre>
@@ -63,10 +65,12 @@ So here we are, package.json has been updated, and node dependencies installed i
 ├─pom.xml
 </pre>
 
-* Now lets start with the React component. Create a file named "Activities.jsx" in /src/main/js :
+* Now we can create a first React component "Activities" that will fetch the activities json and convert it to html. But in order to use the modularity of react, lets also create a child Component "Activity" to render the activity.
+First Create the file "Activities.jsx" in /src/main/js :
 {% highlight Javascript %}
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {Activity} from './Activity.jsx';
 
 class Activities extends React.Component {
 
@@ -76,39 +80,62 @@ class Activities extends React.Component {
   }
 
   componentDidMount() {
-    fetch("/rest/private/api/social/v1-alpha3/portal/activity_stream/feedByTimestamp.json?limit=5&sinceTime=12345&number_of_comments=5&number_of_likes=5").then(
-      (res) => {
+    fetch("/rest/api/social/v1-alpha3/portal/activity_stream/feedByTimestamp.json?limit=5&number_of_comments=5&number_of_likes=5",
+      {credentials: 'include'})
+    .then((res) => {
         return res.json();
-      }
-    ).then((json) => {
+      })
+    .then((json) => {
        this.setState(json);
     })
   }
 
   render() {
     var list = this.state.activities.map( (act) => {
-      var html = {__html:act.title};
-      return <div key={act.id} className="item-container">
-              <div className="item">
-                <div className="header">
-                  <h2>{act.posterIdentity.profile.fullName}</h2>
-                  <date>{new Date(act.postedTime).toString()}</date>
-                </div>
-                <div dangerouslySetInnerHTML={html}/>
-              </div>
-             </div>
+      return <Activity key={act.id} {...act} />
     });
-    return <div>{list}</div>;
+    return <ul>{list}</ul>;
   }
+
 }
 
 ReactDOM.render(<Activities/>, document.getElementById('app'));
 {% endhighlight %}
 
-So we are using the ES6/ES2015 syntax with class inheritance. The React lifecycle is simple : init the state in constructor, mounting a component to DOM, fetch data from API and render.
-Doing fetch in componentDidMount is safest way because of asynchronous update.
+the file "Activity.jsx" in /src/main/js will be :
+{% highlight Javascript %}
+import React from 'react';
+var moment = require('moment');
+
+export class Activity extends React.Component {
+
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+      var html = {__html:this.props.title};
+      return (
+          <li>
+              <img src={this.props.posterIdentity.profile.avatarUrl} />
+              <div className="block">
+                <div className="header">
+                  <strong>{this.props.posterIdentity.profile.fullName}</strong>
+                  <br/>
+                  Posted : <span>{moment(this.props.postedTime).fromNow()}</span>
+                </div>
+                <div dangerouslySetInnerHTML={html}/>
+              </div>
+             </li>);
+  }
+
+}
+{% endhighlight %}
+
+We are using the ES6/ES2015 syntax with class inheritance. The React lifecycle is simple : init the state in constructor, mounting a component to DOM, fetch data from API and render.
+Doing fetch in componentDidMount is safest way because of asynchronous update.<br>
 React is actually no more than a transform from a state to the DOM. Whenever state is modified, render method is called and check what part of the DOM has to be updated.
-A note about state initialization : in standalone mode, we want to proxy the api uri to a static json file. See the server.js for that.
+A note about state initialization : in standalone mode, we want to proxy the api uri to a static json file. See the server.js for that.<br>
 Did you Notice the weird attribute "dangerouslySetInnerHTML" ? React is xss proof, but sometimes you have to inject preformated html code. Do it if html has been sanitized server side :)
 
 * Create a index.html in /src/static and declare the React mount tag as a simple div :
@@ -120,7 +147,7 @@ Did you Notice the weird attribute "dangerouslySetInnerHTML" ? React is xss proo
     <link rel="stylesheet" href="/css/main.css">
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app" class="container"></div>
 
     <script src="js/bundle.js"></script>
   </body>
@@ -130,7 +157,7 @@ We also load script of generated bundle.js. Path is relative to server root.
 
 * In order to make webpack grabs all js/jsx modules, declare a file "index.js" in /src/main/js  :
 {% highlight Javascript %}
-import Hello from './Activities.jsx';
+import Activities from './Activities.jsx';
 {% endhighlight %}
 It will create a final "bundle.js" in the directory of your choice. But we want it in the target directory generated by maven
 Finally add the script in index.html :
@@ -178,7 +205,7 @@ This will serve static files (css, js, html) and proxy api to a mock.
 {% highlight Javascript %}
 var express    = require('express');        // call express
 var app        = express();                 // define our app using express
-var port       = 8080;  			      // set our port
+var port       = 3000;  			      // set our port
 
 // REGISTER STATIC FILES -------------------------------
 app.use(express.static(__dirname+"/target/static/"));
@@ -196,7 +223,7 @@ router.get('/social/v1-alpha3/portal/activity_stream/feedByTimestamp.json', func
 // more routes for our API will happen here
 
 // REGISTER OUR ROUTES -------------------------------
-app.use('/rest/private/api', router);
+app.use('/rest/api', router);
 
 // START THE SERVER
 // =============================================================================
@@ -210,7 +237,7 @@ app.listen(port);
   "start": "webpack --watch & node server.js"
 }
 {% endhighlight %}
-It will start webpack in "watch mode" (ie it automatically rebuilds after a resource modification), and the express server
+It will start webpack in "watch mode" (ie it automatically rebuilds after a resource modification), and the express server. Now type :
 {% highlight shell %}
 npm start
 {% endhighlight %}
@@ -227,9 +254,10 @@ bundle.js.map  861 kB       0  [emitted]  main
 Look at the size... don't worry it is a not optimized yet !
 The map file will map source lines from the generated bundle code to the original es2015 file ! It will be downloaded by browser when you click in console.
 
-* To see the result : http://localhost:8080
+* To see the result : <a>http://localhost:3000</a>. It should be something like this :
+![My helpful screenshot](/assets/screenshot-localhost-3000.png)
 
-* When you're ready to release, you can add the following part in webpack config in order to generate a lighter file (and to disable React dev mode):
+* When you're ready to release, you can add the following part in webpack config in order to disable React dev mode :
 {% highlight javascript %}
 plugins: [
   new webpack.DefinePlugin({
@@ -239,44 +267,79 @@ plugins: [
   })
 ]
 {% endhighlight %}
+You'll have to launch a webpack with production mode as well :
+{% highlight shell %}
+webpack -p
+{% endhighlight %}
 Note : you can still debug in original files as map file is also updated.
 
 # Portlet Integration
-
-OK we will now package the component in a Portlet.
 
 * To get started, you can pick resources in the sample available here : https://github.com/exo-samples/docs-samples/tree/4.3.x/portlet/js. It's a simple javax Portlet that forward to an index.jsp (the view of the portlet).
 
 * index.jsp will be very similar to index.html :
 {% highlight jsp %}
 <div class='react-portlet'>
-  <h2>The React Portlet</h2>
   <div id="app"></div>
 </div>
 {% endhighlight %}
 
-* But as it's an html fragment, you dont include scripts and let exo load js and css. Instead we declare the bundle.js and main.css in the gatein-resources.xml as js modules :
+* open webapp/WEB-INF/gatein-resources.xml to declare the bundle.js as a js modules, and the stylesheet main.css :
 {% highlight xml %}
 <portlet>
-  <name>react-portlet</name>
+  <name>reactsample</name>
   <module>
     <script>
       <path>/js/bundle.js</path>
     </script>
   </module>
 </portlet>
+
 <portlet-skin>
+  <application-name>react-portlet</application-name>
+  <portlet-name>reactsample</portlet-name>
+  <skin-name>Default</skin-name>
   <css-path>/css/main.css</css-path>
 </portlet-skin>
 {% endhighlight %}
+Note : there are two main module styles in javascript : AMD and CommonJS. When transpiling ES2015 to ES5, babel replaces imports with CommonJS style. As Exo uses AMD modules it will automatically adapt them. But some libraries will require some manual adaptation.
 
-* now the build part. When we build the portlet with maven, we also want webpack to build the JS. A simple way is to call webpack inside an exec plugin in the pom.xml:
+
+* now the build part. When we build the portlet, it would be interesting to also build the JS. A simple way is to call webpack inside an exec plugin in the pom.xml:
+{% highlight xml %}
+<plugins>
+  <plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>exec-maven-plugin</artifactId>
+    <version>1.5.0</version>
+    <executions>
+      <execution>
+        <phase>generate-resources</phase>
+        <goals>
+          <goal>exec</goal>
+        </goals>
+      </execution>
+    </executions>
+    <configuration>
+      <executable>webpack</executable>
+      <arguments>
+        <argument>${webpack.args}</argument>
+      </arguments>
+    </configuration>
+  </plugin>
+</plugins>
+{% endhighlight %}
+Then simply type :
 {% highlight shell %}
 mvn clean install
 {% endhighlight %}
+To build in production mode (webpack -p):
+{% highlight shell %}
+mvn clean install -Pproduction
+{% endhighlight %}
 
-* To initialize the npm packages on a clean project with maven, dont forget to call "npm install".
-But we can better define a profile "init" that will exec the command automatically :
+* dont forget to call "npm install" on a clean project to install npm dependencies .
+But you'd better integrate to maven in an "init" profile for example :
 {% highlight shell %}
 mvn clean install -Pinit
 {% endhighlight %}
@@ -292,13 +355,13 @@ docker cp target/react-portlet.war exo:/opt/exo/current/webapps
 {% endhighlight %}
 
 * Log to exo and create a "test" site
-
-* Go to the site, edit page layout and add the portlet. You should see that result :
+* Go to the site, edit the page layout and add the portlet. <br>
+You should see something very similar to standalone mode, but its now dynamic (you must have some activities in your stream!) :
 
 # Going further :
 
-* When you have several portlet, you'll want to share React lib. Simply declare it as a module in a theme extension.
-Then you'll have to tell webpack to exclude React from dist and provided as JS module. Simply declare it as external library in config :
+* When you have several portlets, you'll want to declare React as a gatein shared module. You can simply declare it as a module in a theme extension.
+Then you'll have to tell webpack to exclude React from the bundle, that's the role of "externals" in config :
 {% highlight javascript %}
 external
 {
