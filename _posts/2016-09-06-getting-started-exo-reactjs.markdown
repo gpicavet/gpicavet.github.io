@@ -7,9 +7,9 @@ categories: jekyll update
 
 Here is the first post of -i hope- many posts dedicated to web development !
 
-In this article I would like to share a feedback on Exoplatform portal development i'm doing through my job : you'll learn how to set up a simple reactjs/nodejs development stack, to first build a standalone app, and then package that app in a portlet.
+In this article I would like to share an experience with <a href="https://community.exoplatform.com">Exoplatform portal</a> and ReactJS : you'll learn how to set up a simple reactjs and nodejs development stack, build a standalone app, and then package all to a portlet.
 
-But how did we get to React :) ? Exoplatform comes with a portlet framework called Juzu to build interactive client-side UI. While many developers in my organization masterized several frameworks, they were not very comfortable with it. At that time my office was heavily promoting ReactJS...Beside that, Exoplatform portlet does not require a specific technology to build portlet and you can bring yours !
+How did we get to React ? Exoplatform comes with a portlet framework called Juzu to build interactive client-side UI. While many developers in my organization masterized several frameworks, they were not very comfortable with it. At that time my office was heavily promoting ReactJS...Beside that, Exoplatform portlet does not require a specific technology to build portlet and you can bring yours !
 If you dont know React, take a look at https://facebook.github.io/react/ first !
 
 In order to efficiently manage JS library dependencies, we will use nodejs and npm. We'll then use maven to build and package the portlet part.
