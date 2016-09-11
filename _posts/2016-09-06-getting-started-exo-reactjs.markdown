@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Getting started with ReactJS and Exoplatform portlet development"
-date:   2016-09-06 17:38:41 +0200
+date:   2016-09-09 20:38:41 +0200
 categories: jekyll update
 ---
 
@@ -10,18 +10,20 @@ Here is the first post of -i hope- many posts dedicated to web development !
 In this article I would like to share an experience with <a href="https://community.exoplatform.com">Exoplatform portal</a> and ReactJS : you'll learn how to set up a simple reactjs and nodejs development stack, build a standalone app, and then package all to a portlet.
 
 How did we get to React ? Exoplatform comes with a portlet framework called Juzu to build interactive client-side UI. While many developers in my organization masterized several frameworks, they were not very comfortable with it. At that time my office was heavily promoting ReactJS...Beside that, Exoplatform portlet does not require a specific technology to build portlet and you can bring yours !
-If you dont know React, take a look at https://facebook.github.io/react/ first !
+If you dont know React, take a look at <a href="https://facebook.github.io/react/">the site</a> first.
 
 In order to efficiently manage JS library dependencies, we will use nodejs and npm. We'll then use maven to build and package the portlet part.
 
-Though Javascript is cool for simple projects, javascript is not java : it's more painful to build robust javascript mainly because of its lack of a static, strongly type system. Fortunately some standards has emerged from the mess since a few years !
+Though Javascript is cool for simple projects, it's not java : it's more painful to build robust javascript mainly because of its lack of a static, strongly type system. Fortunately some standards has emerged from the mess since a few years !
 You can now use languages like coffeescript, typescript, ES2015, which also come with syntax improvements. But, except es2015 which is future standard, these languages would not execute in browser, and for es2015 it's not supported evewhere. ReactJS also comes with a syntax called JSX which mix JS and HTML tags, so we'll have to transpile it as well. Babel will be a good guy for that task, and we'll use this time ES2015.
 
 It's time to open your IDE, If you dont have one try <a href="https://atom.io/">Atom</a>. It is lightweight and opensource and works well with JS. Dont forget to install JSX plugin !
 
+Source code is available <a href="https://github.com/gpicavet/react-portlet">here</a>. Please follow instructions for building and deploying at the Portlet section.
+
 # the nodejs stack and standalone application
 
-* As said, the stack is based on Node. First Install it on your system : https://nodejs.org/en/download/. It will come with npm, that will allow us to install js packages (like maven).
+* As said, the stack is based on Node. First <a href="https://nodejs.org/en/download/">Install</a> it on your system. It will come with npm, with which you can install js dependencies (works like maven).
 
 * Create a directory named "react-portlet" and generate a starting package.json file :
 {% highlight shell %}
@@ -40,11 +42,12 @@ Note : react has a core part and a specific lib to render to DOM
 npm install --save-dev babel-loader babel-core babel-preset-es2015 babel-preset-react
 {% endhighlight %}
 
-* We will need the webpack library in order to gather all our JS modules in a dist file, and to do some "hot rebuild".
+* We will need the webpack library in order to gather all the JS modules into a "bundle" file, and also to do some "hot rebuild".
 We'll also install the express Http server, in order to quickly test our app in standalone mode.
 {% highlight shell %}
 npm install –save-dev webpack express
 {% endhighlight %}
+
 
 At this point, package.json has been updated (with --save), and node dependencies installed in "node_modules" directory.
 package.json must be added to version control so anyone can build your project.
@@ -65,7 +68,7 @@ package.json must be added to version control so anyone can build your project.
 ├─pom.xml
 </pre>
 
-* Now we can create a first React component "Activities" that will fetch the activities json and convert it to html. But in order to use the modularity of react, lets also create a child Component "Activity" to render the activity.
+* Now we can create a first React component "Activities" that will fetch the user's activities from server and transform them into html. But in order to use the modularity of react, lets also create a child Component to render a single activity.
 First Create the file "Activities.jsx" in /src/main/js :
 {% highlight Javascript %}
 import React from 'react';
@@ -80,7 +83,7 @@ class Activities extends React.Component {
   }
 
   componentDidMount() {
-    fetch("/rest/api/social/v1-alpha3/portal/activity_stream/feedByTimestamp.json?limit=5&number_of_comments=5&number_of_likes=5",
+    fetch("/rest/v1/social/activities?limit=10&expand=identity",
       {credentials: 'include'})
     .then((res) => {
         return res.json();
@@ -132,13 +135,13 @@ export class Activity extends React.Component {
 }
 {% endhighlight %}
 
-We are using the ES6/ES2015 syntax with class inheritance. The React lifecycle is simple : init the state in constructor, mounting a component to DOM, fetch data from API and render.
-Doing fetch in componentDidMount is safest way because of asynchronous update.<br>
-React is actually no more than a transform from a state to the DOM. Whenever state is modified, render method is called and check what part of the DOM has to be updated.
-A note about state initialization : in standalone mode, we want to proxy the api uri to a static json file. See the server.js for that.<br>
+We are using the ES6/ES2015 syntax with class inheritance. The React lifecycle in short will : init the state, mount component to DOM, fetch data from API and render.
+There's a method corresponding to each lifecycle step. For example doing fetch in componentDidMount is the safest way because of asynchronous update.<br>
+Whenever the state is modified, render method is called and check what part of the DOM has to be updated.In the example we wont do actions so state will not be modified.
+A good React pattern to use whenever possible, is to manage state at the highest level component (here Activities) and pass data to child components (here Activity) via the "props". So we could replace the Activity class with the react <a href="https://facebook.github.io/react/docs/reusable-components.html#stateless-functions">stateless function</a> pattern, in order to get rid of the useless lifecycle.<br>
 Did you Notice the weird attribute "dangerouslySetInnerHTML" ? React is xss proof, but sometimes you have to inject preformated html code. Do it if html has been sanitized server side :)
 
-* Create a index.html in /src/static and declare the React mount tag as a simple div :
+* Now we create the index.html in /src/static and declare the React mount tag as a simple div :
 {% highlight Html %}
 <!doctype html>
 <html>
@@ -153,16 +156,15 @@ Did you Notice the weird attribute "dangerouslySetInnerHTML" ? React is xss proo
   </body>
 </html>
 {% endhighlight %}
-We also load script of generated bundle.js. Path is relative to server root.
+Note : we include the "bundle.js" script that will be generated with webpack.
 
-* In order to make webpack grabs all js/jsx modules, declare a file "index.js" in /src/main/js  :
+* In order to generate the bundle, we declare a file "/src/main/js/index.js" that will import the root component of our app, here Activities :
 {% highlight Javascript %}
 import Activities from './Activities.jsx';
 {% endhighlight %}
-It will create a final "bundle.js" in the directory of your choice. But we want it in the target directory generated by maven
-Finally add the script in index.html :
+Note : Webpack will use this file as an entrypoint from which to pack all the imports.
 
-* declare a minimum webpack config "webpack.config.js" in /, that will resolve the imports with babel-loader and generate a bundle.js in target dir :
+* Then declare "/webpack.config.js"  :
 {% highlight Javascript %}
 var path = require('path');
 var webpack = require('webpack');
@@ -187,21 +189,25 @@ module.exports = {
   }
 };
 {% endhighlight %}
+Here we declare file "index.js" just created before.
+Then we define the ouput folder of the bundle.js. This folder is corresponding to maven target dir (it will be usefull later)
+Then we define the babel-loader, which takes over the transpilation part.
 
-* To build the app, open package.json and add a node "install" that will chain the following commands :
-It will simply copy our static resources in target/
+* Before we run the app, our static files need to be copied to target dir as well, it can be done with scripts in "/package.json" :
 {% highlight json %}
 "scripts": {
-  "install": "mkdir -p target/static & cp -R src/static/* target/static & cp -R src/main/webapp/css target/static"
+  "copy": "mkdir -p target/static & cp -R src/static/* target/static & cp -R src/main/webapp/css target/static"
 }
 {% endhighlight %}
-Note : in a real project, you should use a build library like gulp to externalize complex build tasks
+Note : in a real project, you should consider a library like gulp to externalize complex build tasks and be OS independant!
+
+To call the script :
 {% highlight shell %}
-npm install
+npm run copy
 {% endhighlight %}
 
-* Next we create a server.js in /, that will allow to test in standalone mode :
-This will serve static files (css, js, html) and proxy api to a mock.
+* Next we create the express http server in the file /server.js<br>
+Express will manage our standalone mode : it will serve static files (css, js, html) and proxy api requests to static files
 {% highlight Javascript %}
 var express    = require('express');        // call express
 var app        = express();                 // define our app using express
@@ -220,7 +226,9 @@ router.get('/social/v1-alpha3/portal/activity_stream/feedByTimestamp.json', func
     res.sendFile(__dirname+"/target/static/api/feedByTimestamp.json");
 });
 
-// more routes for our API will happen here
+router.get('/avatar.png', function(req, res) {
+    res.sendFile(__dirname+"/target/static/avatar.png");
+});
 
 // REGISTER OUR ROUTES -------------------------------
 app.use('/rest/api', router);
@@ -229,58 +237,69 @@ app.use('/rest/api', router);
 // =============================================================================
 app.listen(port);
 {% endhighlight %}
+Note: you have to record real api responses in static files before (here you can pick in source project).
 
-* To start the app, add a node "start" with the following commands :
+* When starting the server, we also want to start webpack in "watch mode" in order to rebuild on change. Add a "start" property with the following commands in /package.json :
 {% highlight json %}
 "scripts": {
   ...
-  "start": "webpack --watch & node server.js"
+  "start": "npm run copy & webpack --watch & node server.js"
 }
 {% endhighlight %}
-It will start webpack in "watch mode" (ie it automatically rebuilds after a resource modification), and the express server. Now type :
+
+Now just type :
 {% highlight shell %}
 npm start
 {% endhighlight %}
 You should see something like this :
 {% highlight shell %}
-Hash: 25c3e3b136aa3745a9f9
+Hash: 0aed17830ca00bbed3fd
 Version: webpack 1.13.2
-Time: 4068ms
-        Asset    Size  Chunks             Chunk Names
-    bundle.js  742 kB       0  [emitted]  main
-bundle.js.map  861 kB       0  [emitted]  main
-    + 173 hidden modules
+Time: 4640ms
+        Asset     Size  Chunks             Chunk Names
+    bundle.js  1.22 MB       0  [emitted]  main
+bundle.js.map  1.43 MB       0  [emitted]  main
+    + 278 hidden modules
 {% endhighlight %}
-Look at the size... don't worry it is a not optimized yet !
-The map file will map source lines from the generated bundle code to the original es2015 file ! It will be downloaded by browser when you click in console.
+Look at the size... don't worry it is a not optimized yet !<br>
+The map file will map source lines from the generated bundle code to the original es2015 file. It will be downloaded by browser only when you open the debugger !
+Note : static files are not watched, you have to restart server. We could improve that by writing a simple gulp script for example, and add it to start script.
 
 * To see the result : <a>http://localhost:3000</a>. It should be something like this :
 ![My helpful screenshot](/assets/screenshot-localhost-3000.png)
 
-* When you're ready to release, you can add the following part in webpack config in order to disable React dev mode :
+* When you're ready to release, you can add the following script in /package.json :
 {% highlight javascript %}
-plugins: [
-  new webpack.DefinePlugin({
-    'process.env': {
-      'NODE_ENV': JSON.stringify('production')
-    }
-  })
-]
+"scripts": {
+  ...
+  "release": "export NODE_ENV=production & webpack -p"
+}
 {% endhighlight %}
-You'll have to launch a webpack with production mode as well :
+So we set NODE_ENV=production in order to disable React dev mode (it helps a lot, be its a lot slower), and started webpack with optimizers.<br>
+After optimization, the bundle will be 3 times smaller:
 {% highlight shell %}
-webpack -p
+Hash: 958d20ab7b77c17c6474
+Version: webpack 1.13.2
+Time: 8955ms
+        Asset       Size  Chunks             Chunk Names
+    bundle.js     418 kB       0  [emitted]  main
+bundle.js.map  219 bytes       0  [emitted]  main
+    + 278 hidden modules
 {% endhighlight %}
-Note : you can still debug in original files as map file is also updated.
+Note : you will see some warnings from the optimizer. Well, library all not always cleaned :)<br>
+Important : optimized bundle should not be too big (< 1 Mo), so for large app you can look at webpack's code splitting feature.<br>
+Note : you can still debug in original files in production, as map file is also updated !
+
+You're done for that part ! You could use this app outside Exoplatform but you'll have to adapt the proxy routes in server.js to exo backend (easy!) and deal with sso authentication (actually the hard part !)
 
 # Portlet Integration
 
 * To get started, you can pick resources in the sample available here : https://github.com/exo-samples/docs-samples/tree/4.3.x/portlet/js. It's a simple javax Portlet that forward to an index.jsp (the view of the portlet).
 
-* index.jsp will be very similar to index.html :
+* modify index.jsp and only declare a html fragment with "app" mount point :
 {% highlight jsp %}
 <div class='react-portlet'>
-  <div id="app"></div>
+  <div id="app" class="container"></div>
 </div>
 {% endhighlight %}
 
@@ -302,10 +321,11 @@ Note : you can still debug in original files as map file is also updated.
   <css-path>/css/main.css</css-path>
 </portlet-skin>
 {% endhighlight %}
-Note : there are two main module styles in javascript : AMD and CommonJS. When transpiling ES2015 to ES5, babel replaces imports with CommonJS style. As Exo uses AMD modules it will automatically adapt them. But some libraries will require some manual adaptation.
+Note : These modules will be automatically loaded by Exoplatform when loading portlet.<br>
+There are two main module styles in javascript : AMD and CommonJS. When transpiling ES2015 to ES5, babel replaces imports with CommonJS style. As Exo uses AMD modules it will automatically adapt them. But some libraries require manual adaptation, it would be the case of React if we had to load it apart from the bundle.js.
 
 
-* now the build part. When we build the portlet, it would be interesting to also build the JS. A simple way is to call webpack inside an exec plugin in the pom.xml:
+* now the build part. When we build the portlet, it would be interesting to 1) install JS dependencies and 2) do webpack release. The maven exec plugin will do the job. In the ""/pom.xml":
 {% highlight xml %}
 <plugins>
   <plugin>
@@ -314,18 +334,33 @@ Note : there are two main module styles in javascript : AMD and CommonJS. When t
     <version>1.5.0</version>
     <executions>
       <execution>
+        <id>npm install</id>
         <phase>generate-resources</phase>
         <goals>
           <goal>exec</goal>
         </goals>
+        <configuration>
+          <executable>npm</executable>
+          <arguments>
+            <argument>install</argument>
+          </arguments>
+        </configuration>
+      </execution>
+      <execution>
+      <id>npm release</id>
+      <phase>generate-resources</phase>
+      <goals>
+        <goal>exec</goal>
+      </goals>
+      <configuration>
+      <executable>npm</executable>
+        <arguments>
+          <argument>run</argument>
+          <argument>${webpack.release}</argument>
+        </arguments>
+      </configuration>
       </execution>
     </executions>
-    <configuration>
-      <executable>webpack</executable>
-      <arguments>
-        <argument>${webpack.args}</argument>
-      </arguments>
-    </configuration>
   </plugin>
 </plugins>
 {% endhighlight %}
@@ -333,16 +368,12 @@ Then simply type :
 {% highlight shell %}
 mvn clean install
 {% endhighlight %}
-To build in production mode (webpack -p):
+This will build in dev mode (webpack.release=release-debug)<br>
+Just add a profile to build in production mode (set webpack.release=release), so :
 {% highlight shell %}
 mvn clean install -Pproduction
 {% endhighlight %}
 
-* dont forget to call "npm install" on a clean project to install npm dependencies .
-But you'd better integrate to maven in an "init" profile for example :
-{% highlight shell %}
-mvn clean install -Pinit
-{% endhighlight %}
 
 * To deploy on exo, simply copy the target/react-portlet.war in webapps dir.
 Note : you can use Docker to easily get and run the latest exo distribution :
