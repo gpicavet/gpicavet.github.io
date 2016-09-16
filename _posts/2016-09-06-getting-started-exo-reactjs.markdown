@@ -221,9 +221,9 @@ app.use(express.static(__dirname+"/target/react-portlet/"));
 // =============================================================================
 var router = express.Router();              // get an instance of the express Router
 
-router.get('/social/v1-alpha3/portal/activity_stream/feedByTimestamp.json', function(req, res) {
+router.get('/v1/social/activities', function(req, res) {
     res.set('content-type','application/json; charset=utf8')
-    res.sendFile(__dirname+"/target/static/api/feedByTimestamp.json");
+    res.sendFile(__dirname+"/target/static/api/activities.json");
 });
 
 router.get('/avatar.png', function(req, res) {
@@ -376,13 +376,14 @@ mvn clean install -Pproduction
 
 # Incompatibility with the gatein minifier
 
-You'll quickly notice that Non-minified version of React cant bear with gatein minifier (based on Google Closure) ! <br>
-The simplest solution is to use the minified version of our bundle.js with exo normal mode, and Non-minified in exo dev mode !
-But there's a bad news : you will loose the source mapping because of double-minification :(
-<br>
-But a better solution would be to disable minifier on React, and let us supply the React.min.js and map built by facebook.
-You can do that by overriding the UIPortal.gtmpl
-
+* You'll quickly notice that Non-minified version of React cant bear with gatein minifier (Google Closure)! <br>
+Actually the only way to disable gatein minifier is running exo in dev mode... not great :)
+But there's weird thing : when you minify your bundle with "webpack -p", gatein minifier works !
+So the simplest solution is to use the minified version of our bundle.js with exo normal mode, and Non-minified in exo dev mode !
+But there's a bad news : you will loose the source mapping because of the double-minification :(
+* A better solution would be to disable minifier on some libs, and let us build and supply the minified and map files.
+Actually you can override the UIPortalApplication.gtmpl script in portal module, filter js paths and remove the "-min" when you need...but it's tricky :)
+It would be great if exo/gatein come with a parameter in module definition !
 
 # Deploying
 
@@ -465,11 +466,8 @@ define('PORTLET/react-portlet/reactsample', ["SHARED/vendor"], function(vendor) 
 
 ## Conclusion
 
-We've learn how to set up a standalone JS app based on React and built with a nodejs/npm/es2015//babel/webpack stack. There's a lot of choice here and you could replace some of elements of the stack : npm vs bower, es2015 vs typescript, webpack vs browserify ... each has pros and cons you should be aware of before choosing.
-<br>
-We've seen how to siply integrate npm and maven to next build a portlet on top of standalone app.
-<br>
-Unfortunately, exo gatein minifier hate your react code... even if there's a work around, gatein should really permits lib exclusion from minifier.
-<br>
-On a real project you'll have to deal with unit testing. As an example, we were using Mocha to write tests, Phantomjs as a runtime platform and Istanbul as a coverage tool.
+* We've learn how to set up a standalone JS app based on React and built with a nodejs/npm/es2015//babel/webpack stack. There's a lot of choice here and you could replace some of elements of the stack : npm vs bower, es2015 vs typescript, webpack vs browserify ... each has pros and cons you should be aware of before choosing.
+* We've seen how to siply integrate npm and maven to next build a portlet on top of standalone app.
+* Unfortunately, exo gatein minifier hate your react code... even if there's a work around, gatein should really permits lib exclusion from minifier.
+* Last words : On a real project you'll have to deal with unit testing. As an example, we were using Mocha to write tests, Phantomjs as a runtime platform and Istanbul as a coverage tool.
 In order to manage complex build tasks you should use a lib like Gulp or Grunt.
