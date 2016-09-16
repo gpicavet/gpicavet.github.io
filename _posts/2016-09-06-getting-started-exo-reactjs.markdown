@@ -21,7 +21,7 @@ It's time to open your IDE, If you dont have one try <a href="https://atom.io/">
 
 Source code is available <a href="https://github.com/gpicavet/react-portlet">here</a>. Please follow instructions for building and deploying at the Portlet section.
 
-# the nodejs stack and standalone application
+## nodejs stack and standalone application
 
 * As said, the stack is based on Node. First <a href="https://nodejs.org/en/download/">Install</a> it on your system. It will come with npm, with which you can install js dependencies (works like maven).
 
@@ -117,17 +117,17 @@ export class Activity extends React.Component {
   }
 
   render() {
-      var html = {__html:this.props.title};
+      var titleHtml = {__html:this.props.title};
       return (
           <li>
-              <img src={this.props.posterIdentity.profile.avatarUrl} />
+              <img src={this.props.identity.profile.avatar===null ? "/eXoSkin/skin/images/system/UserAvtDefault.png":this.props.identity.profile.avatar} />
               <div className="block">
                 <div className="header">
-                  <strong>{this.props.posterIdentity.profile.fullName}</strong>
+                  <strong>{this.props.identity.profile.fullname}</strong>
                   <br/>
-                  Posted : <span>{moment(this.props.postedTime).fromNow()}</span>
+                  Posted : <span>{moment(new Date(this.props.createDate)).fromNow()}</span>
                 </div>
-                <div dangerouslySetInnerHTML={html}/>
+                <div dangerouslySetInnerHTML={titleHtml}/>
               </div>
              </li>);
   }
@@ -292,7 +292,7 @@ Note : you can still debug in original files in production, as map file is also 
 
 You're done for that part ! You could use this app outside Exoplatform but you'll have to adapt the proxy routes in server.js to exo backend (easy!) and deal with sso authentication (actually the hard part !)
 
-# Portlet Integration
+## Portlet Integration
 
 * To get started, you can pick resources in the sample available here : https://github.com/exo-samples/docs-samples/tree/4.3.x/portlet/js. It's a simple javax Portlet that forward to an index.jsp (the view of the portlet).
 
@@ -374,32 +374,102 @@ Just add a profile to build in production mode (set webpack.release=release), so
 mvn clean install -Pproduction
 {% endhighlight %}
 
+# Incompatibility with the gatein minifier
 
-* To deploy on exo, simply copy the target/react-portlet.war in webapps dir.
-Note : you can use Docker to easily get and run the latest exo distribution :
-{% highlight shell %}
-docker run -p 8080:8080 --name=exo exoplatform/exo-community:latest
-{% endhighlight %}
-Then copy the war to the running container and wait for deployment :
-{% highlight shell %}
-docker cp target/react-portlet.war exo:/opt/exo/current/webapps
-{% endhighlight %}
+You'll quickly notice that Non-minified version of React cant bear with gatein minifier (based on Google Closure) ! <br>
+The simplest solution is to use the minified version of our bundle.js with exo normal mode, and Non-minified in exo dev mode !
+But there's a bad news : you will loose the source mapping because of double-minification :(
+<br>
+But a better solution would be to disable minifier on React, and let us supply the React.min.js and map built by facebook.
+You can do that by overriding the UIPortal.gtmpl
 
-* Log to exo and create a "test" site
+
+# Deploying
+
+Those who are used to exo can skip this part !
+
+* Download the latest community edition of Exo (4.3+) and start.
+* Then simply copy the target/react-portlet.war in webapps dir and wait for deployment.
+* Log into exo and create a "test" site
 * Go to the site, edit the page layout and add the portlet. <br>
-You should see something very similar to standalone mode, but its now dynamic (you must have some activities in your stream!) :
+You should see something very similar to standalone mode, but its now dynamic (you must have created some activities before) :
 
-# Going further :
+# Sharing common modules :
 
-* When you have several portlets, you'll want to declare React as a gatein shared module. You can simply declare it as a module in a theme extension.
-Then you'll have to tell webpack to exclude React from the bundle, that's the role of "externals" in config :
-{% highlight javascript %}
-external
-{
-    externals: {
-        "react": "react"
-    }
+* When you're developing several portlets it's legitimate to reuse some libs (like React), You may already know that gatein allow you to share modules.
+* Before that, edit webpack.config.js, we have to tell webpack to gather React, ReactDOM and moment libs in another bundle, that we're calling the "vendor" bundle :
+{% highlight Javascript %}
+entry: {
+  bundle:'./src/main/js/index.js',
+  'vendor-bundle': [
+    'react',
+    'react-dom',
+    'moment'
+  ]
 }
+...
+plugins:[
+ ...
+  new webpack.optimize.CommonsChunkPlugin({
+    name: 'vendor-bundle',
+    filename: 'vendor-bundle.js',
+    minChunks: Infinity
+  })
+]
+{% endhighlight %}
+Note : Take a look at chunking. It's a powerfull way to optimize web app first load!
+
+* After rebuilding, you'll see the new size of your bundle !
+{% highlight shell %}
+Hash: 837db454da54d24ded16
+Version: webpack 1.13.2
+Time: 6187ms
+               Asset     Size  Chunks             Chunk Names
+           bundle.js  7.13 kB       0  [emitted]  bundle
+    vendor-bundle.js  1.21 MB       1  [emitted]  vendor-bundle
+       bundle.js.map  3.69 kB       0  [emitted]  bundle
+vendor-bundle.js.map  1.44 MB       1  [emitted]  vendor-bundle
+   [0] multi vendor-bundle 52 bytes {1} [built]
+    + 278 hidden modules
 {% endhighlight %}
 
-* The stack can be expanded with unit-test lib. As an example, we were using Mocha to write tests, Phantomjs as a runtime platform and Istanbul as a coverage tool.
+
+* Then declare that vendor-bundle as a shared module (to keep simple, we'll share it from our portlet, but you will rather package to another war) :
+{% highlight xml %}
+<module>
+    <name>vendor</name>
+    <script>
+      <path>/js/vendor-bundle.js</path>
+    </script>
+</module>
+
+<portlet>
+  <name>reactsample</name>
+  <module>
+    <script>
+      <path>/js/bundle.js</path>
+    </script>
+    <depends>
+      <module>vendor</module>
+  </depends>
+  </module>
+</portlet>
+{% endhighlight %}
+
+* Now when you look at the <a href="http://localhost:8080/portal/scripts/4.3.0/PORTLET/react-portlet:reactsample.js">reactsample.js</a> resource downloaded by portlet, you see it now depends on the shared module :
+{% highlight Javascript %}
+define('PORTLET/react-portlet/reactsample', ["SHARED/vendor"], function(vendor) {
+  ...
+{% endhighlight %}
+
+
+## Conclusion
+
+We've learn how to set up a standalone JS app based on React and built with a nodejs/npm/es2015//babel/webpack stack. There's a lot of choice here and you could replace some of elements of the stack : npm vs bower, es2015 vs typescript, webpack vs browserify ... each has pros and cons you should be aware of before choosing.
+<br>
+We've seen how to siply integrate npm and maven to next build a portlet on top of standalone app.
+<br>
+Unfortunately, exo gatein minifier hate your react code... even if there's a work around, gatein should really permits lib exclusion from minifier.
+<br>
+On a real project you'll have to deal with unit testing. As an example, we were using Mocha to write tests, Phantomjs as a runtime platform and Istanbul as a coverage tool.
+In order to manage complex build tasks you should use a lib like Gulp or Grunt.
