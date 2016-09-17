@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Getting started with ReactJS and Exoplatform portlet development"
-date:   2016-09-09 20:38:41 +0200
+date:   2016-09-17 20:38:41 +0200
 categories: jekyll update
 ---
 
