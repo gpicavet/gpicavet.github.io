@@ -186,12 +186,20 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+
+  plugins:[
+  new webpack.DefinePlugin({
+    'process.env':{
+      'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    }
+  })]
 };
 {% endhighlight %}
 Here we declare file "index.js" just created before.
 Then we define the ouput folder of the bundle.js. This folder is corresponding to maven target dir (it will be usefull later)
 Then we define the babel-loader, which takes over the transpilation part.
+Define Plugin is just transmitting NODE_ENV variable to loader parser, in order to prune DEV code in React lib at build time.
 
 * Before we run the app, our static files need to be copied to target dir as well, it can be done with scripts in "/package.json" :
 {% highlight json %}
@@ -286,7 +294,7 @@ Time: 8955ms
 bundle.js.map  219 bytes       0  [emitted]  main
     + 278 hidden modules
 {% endhighlight %}
-Note : you will see some warnings from the optimizer. Well, library all not always cleaned :)<br>
+Note : did you notice few warnings from the optimizer ? Well, library all not always cleaned :)<br>
 Important : optimized bundle should not be too big (< 1 Mo), so for large app you can look at webpack's code splitting feature.<br>
 Note : you can still debug in original files in production, as map file is also updated !
 
@@ -466,8 +474,8 @@ define('PORTLET/react-portlet/reactsample', ["SHARED/vendor"], function(vendor) 
 
 ## Conclusion
 
-* We've learn how to set up a standalone JS app based on React and built with a nodejs/npm/es2015//babel/webpack stack. There's a lot of choice here and you could replace some of elements of the stack : npm vs bower, es2015 vs typescript, webpack vs browserify ... each has pros and cons you should be aware of before choosing.
-* We've seen how to siply integrate npm and maven to next build a portlet on top of standalone app.
+* We've learned how to set up a standalone JS app based on React and built with a nodejs/npm/es2015//babel/webpack stack. There's a lot of choice here and you could replace some of elements of the stack : npm vs bower, es2015 vs typescript, webpack vs browserify ... each has pros and cons you should be aware of before choosing.
+* We've learned how to siply integrate npm and maven to next build a portlet on top of standalone app.
 * Unfortunately, exo gatein minifier hate your react code... even if there's a work around, gatein should really permits lib exclusion from minifier.
 * Last words : On a real project you'll have to deal with unit testing. As an example, we were using Mocha to write tests, Phantomjs as a runtime platform and Istanbul as a coverage tool.
 In order to manage complex build tasks you should use a lib like Gulp or Grunt.
