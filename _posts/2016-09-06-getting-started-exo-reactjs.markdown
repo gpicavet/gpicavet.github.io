@@ -393,21 +393,26 @@ Actually the only way to disable gatein minifier is running exo in dev mode... n
 But there's weird thing : when you minify your bundle with "webpack -p", gatein minifier works !
 So the simplest solution is to use the minified version of our bundle.js with exo normal mode, and Non-minified in exo dev mode !
 But there's a bad news : you will loose the source mapping because of the double-minification :(
-* A better solution would be to disable minifier on some libs, and let us build and supply the minified and map files.
+* another solution would be to disable minifier on some libs, and let us build and supply the minified and map files.
 Actually you can override the UIPortalApplication.gtmpl script in portal module, filter js paths and remove the "-min" when you need...but it's tricky :)
 It would be great if exo/gatein come with a parameter in module definition !
-* I've recently heard about <a href="http://www.webjars.org/">webjars</a>, it's probably a more elegant way
+* I've heard about <a href="http://www.webjars.org/">webjars</a>, it's probably a more elegant way. Have to look at it in the future:)
 
 
 # Deploying
 
 Those who are used to exo can skip this part !
 
-* Download the latest community edition of Exo (4.3+) and start.
-* Then simply copy the target/react-portlet.war in webapps dir and wait for deployment.
+* Requirements : have an exo account, and a JDK 8 installed.
+* Then <a href="https://community.exoplatform.com/portal/intranet/downloads">Download</a> the latest community edition of Exo (4.3+), unzip and launch start_eXo script.
+* Simply copy the target/react-portlet.war in webapps dir and wait for deployment.
 * Log into exo and create a "test" site
 * Go to the site, edit the page layout and add the portlet. <br>
-You should see something very similar to standalone mode, but its now dynamic (you must have created some activities before) :
+You should see something very similar to standalone mode, but its now dynamic (you must have created some activities before)
+
+# Note on docker
+
+* sorry, it doesn't work in an exo container, unless starting it in debug mode i have to look into it
 
 # Sharing common modules :
 
