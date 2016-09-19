@@ -480,6 +480,6 @@ define('PORTLET/react-portlet/reactsample', ["SHARED/vendor"], function(vendor) 
 
 * We've learned how to set up a standalone JS app based on React and built with a nodejs/npm/es2015//babel/webpack stack. There's a lot of choice here and you could replace some of elements of the stack : npm vs bower, es2015 vs typescript, webpack vs browserify ... each has pros and cons you should be aware of before choosing.
 * We've learned how to siply integrate npm and maven to next build a portlet on top of standalone app.
-* Unfortunately, exo gatein minifier hates your react code ^_^. Even if there's a work around, gatein should really permits lib exclusion from minifier.
+* Unfortunately, exo gatein minifier hates your react code :) even if there's a work around, gatein should really permits lib exclusion from minifier.
 * Last words : On a real project you'll have to deal with unit testing. As an example, we were using Mocha to write tests, Phantomjs as a runtime platform and Istanbul as a coverage tool.
 In order to manage complex build tasks you should use a lib like Gulp or Grunt.
