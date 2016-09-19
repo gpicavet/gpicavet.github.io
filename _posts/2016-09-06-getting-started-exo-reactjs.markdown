@@ -83,7 +83,7 @@ class Activities extends React.Component {
   }
 
   componentDidMount() {
-    fetch("/rest/v1/social/activities?limit=10&expand=identity",
+    fetch("/rest/v1/social/activities?limit="+this.props.limit+"&expand=identity",
       {credentials: 'include'})
     .then((res) => {
         return res.json();
@@ -102,7 +102,7 @@ class Activities extends React.Component {
 
 }
 
-ReactDOM.render(<Activities/>, document.getElementById('app'));
+ReactDOM.render(<Activities limit="10"/>, document.getElementById('app'));
 {% endhighlight %}
 
 the file "Activity.jsx" in /src/main/js will be :
@@ -204,7 +204,7 @@ Define Plugin is just transmitting NODE_ENV variable to loader parser, in order 
 * Before we run the app, our static files need to be copied to target dir as well, it can be done with scripts in "/package.json" :
 {% highlight json %}
 "scripts": {
-  "copy": "mkdir -p target/static & cp -R src/static/* target/static & cp -R src/main/webapp/css target/static"
+  "copy": "cp -R src/static/* target/static & cp -R src/main/webapp/css target/static"
 }
 {% endhighlight %}
 Note : in a real project, you should consider a library like gulp to externalize complex build tasks and be OS independant!
@@ -247,17 +247,17 @@ app.listen(port);
 {% endhighlight %}
 Note: you have to record real api responses in static files before (here you can pick in source project).
 
-* When starting the server, we also want to start webpack in "watch mode" in order to rebuild on change. Add a "start" property with the following commands in /package.json :
+* Before starting the server, we also want to start webpack in "watch mode" in order to rebuild on change. Add a "start" property with the following commands in /package.json :
 {% highlight json %}
 "scripts": {
   ...
-  "start": "npm run copy & webpack --watch & node server.js"
+  "watch": "npm run copy && node node_modules/webpack/bin/webpack.js --progress --colors --watch -d"
 }
 {% endhighlight %}
 
 Now just type :
 {% highlight shell %}
-npm start
+npm run watch
 {% endhighlight %}
 You should see something like this :
 {% highlight shell %}
@@ -273,14 +273,18 @@ Look at the size... don't worry it is a not optimized yet !<br>
 The map file will map source lines from the generated bundle code to the original es2015 file. It will be downloaded by browser only when you open the debugger !
 Note : static files are not watched, you have to restart server. We could improve that by writing a simple gulp script for example, and add it to start script.
 
-* To see the result : <a>http://localhost:3000</a>. It should be something like this :
+* Now start the server 
+{% highlight shell %}
+npm run watch
+{% endhighlight %}
+and enjoy the result at <a>http://localhost:3000</a>. It should be something like this :
 ![My helpful screenshot](/assets/screenshot-localhost-3000.png)
 
 * When you're ready to release, you can add the following script in /package.json :
 {% highlight javascript %}
 "scripts": {
   ...
-  "release": "export NODE_ENV=production & webpack -p"
+  "release": "export NODE_ENV=production && webpack -p"
 }
 {% endhighlight %}
 So we set NODE_ENV=production in order to disable React dev mode (it helps a lot, be its a lot slower), and started webpack with optimizers.<br>
