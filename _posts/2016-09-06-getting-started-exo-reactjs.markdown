@@ -396,6 +396,8 @@ But there's a bad news : you will loose the source mapping because of the double
 * A better solution would be to disable minifier on some libs, and let us build and supply the minified and map files.
 Actually you can override the UIPortalApplication.gtmpl script in portal module, filter js paths and remove the "-min" when you need...but it's tricky :)
 It would be great if exo/gatein come with a parameter in module definition !
+* I've recently heard about <a href="http://www.webjars.org/">webjars</a>, it's probably a more elegant way
+
 
 # Deploying
 
@@ -447,7 +449,7 @@ vendor-bundle.js.map  1.44 MB       1  [emitted]  vendor-bundle
 {% endhighlight %}
 
 
-* Then declare that vendor-bundle as a shared module (to keep simple, we'll share it from our portlet, but you will rather package to another war) :
+* Then declare vendor-bundle.js as a shared module. To keep things simple, we declare it in our portlet, but you'd rather package to another war :
 {% highlight xml %}
 <module>
     <name>vendor</name>
@@ -469,7 +471,7 @@ vendor-bundle.js.map  1.44 MB       1  [emitted]  vendor-bundle
 </portlet>
 {% endhighlight %}
 
-* Now when you look at the <a href="http://localhost:8080/portal/scripts/4.3.0/PORTLET/react-portlet:reactsample.js">reactsample.js</a> resource downloaded by portlet, you see it now depends on the shared module :
+* Now when you look at the <a href="http://localhost:8080/portal/scripts/4.3.0/PORTLET/react-portlet:reactsample.js">reactsample.js</a> resource downloaded by portlet, it now depends on the shared module :
 {% highlight Javascript %}
 define('PORTLET/react-portlet/reactsample', ["SHARED/vendor"], function(vendor) {
   ...
@@ -481,5 +483,6 @@ define('PORTLET/react-portlet/reactsample', ["SHARED/vendor"], function(vendor) 
 * We've learned how to set up a standalone JS app based on React and built with a nodejs/npm/es2015//babel/webpack stack. There's a lot of choice here and you could replace some of elements of the stack : npm vs bower, es2015 vs typescript, webpack vs browserify ... each has pros and cons you should be aware of before choosing.
 * We've learned how to siply integrate npm and maven to next build a portlet on top of standalone app.
 * Unfortunately, exo gatein minifier hates your react code :) even if there's a work around, gatein should really permits lib exclusion from minifier.
-* Last words : On a real project you'll have to deal with unit testing. As an example, we were using Mocha to write tests, Phantomjs as a runtime platform and Istanbul as a coverage tool.
+* Last words : On a real project you'll have to deal with unit testing.<be>
+Just for the record, we're currently using <a href="https://mochajs.org/">Mocha</a> to write tests, <a href="http://phantomjs.org/">Phantomjs</a> as a runtime platform and Istanbul as a coverage tool.
 In order to manage complex build tasks you should use a lib like Gulp or Grunt.
