@@ -247,7 +247,7 @@ app.listen(port);
 {% endhighlight %}
 Note: you have to record real api responses in static files before (here you can pick in source project).
 
-* Before starting the server, we also want to start webpack in "watch mode" in order to rebuild on change. Add a "start" property with the following commands in /package.json :
+* Before starting the server, we also want to start webpack in "watch mode" in order to rebuild on change. Add a "watch" script with the following commands in /package.json :
 {% highlight json %}
 "scripts": {
   ...
@@ -275,9 +275,9 @@ Note : static files are not watched, you have to restart server. We could improv
 
 * Now start the server 
 {% highlight shell %}
-npm run watch
+npm start
 {% endhighlight %}
-and enjoy the result at <a>http://localhost:3000</a>. It should be something like this :
+and enjoy the result at <a>http://localhost:3000</a>. It should look like this :
 ![My helpful screenshot](/assets/screenshot-localhost-3000.png)
 
 * When you're ready to release, you can add the following script in /package.json :
@@ -480,6 +480,6 @@ define('PORTLET/react-portlet/reactsample', ["SHARED/vendor"], function(vendor) 
 
 * We've learned how to set up a standalone JS app based on React and built with a nodejs/npm/es2015//babel/webpack stack. There's a lot of choice here and you could replace some of elements of the stack : npm vs bower, es2015 vs typescript, webpack vs browserify ... each has pros and cons you should be aware of before choosing.
 * We've learned how to siply integrate npm and maven to next build a portlet on top of standalone app.
-* Unfortunately, exo gatein minifier hate your react code... even if there's a work around, gatein should really permits lib exclusion from minifier.
+* Unfortunately, exo gatein minifier hates your react code ^_^. Even if there's a work around, gatein should really permits lib exclusion from minifier.
 * Last words : On a real project you'll have to deal with unit testing. As an example, we were using Mocha to write tests, Phantomjs as a runtime platform and Istanbul as a coverage tool.
 In order to manage complex build tasks you should use a lib like Gulp or Grunt.
