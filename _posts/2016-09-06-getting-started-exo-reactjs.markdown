@@ -15,7 +15,7 @@ If you dont know React, take a look at <a href="https://facebook.github.io/react
 In order to efficiently manage JS library dependencies, we will use nodejs and npm. We'll then use maven to build and package the portlet part.
 
 Though Javascript is cool for simple projects, it's not java : it's more painful to build robust javascript mainly because of its lack of a static, strongly type system. Fortunately some standards has emerged from the mess since a few years !
-You can now use languages like coffeescript, typescript, ES2015, which also come with syntax improvements. But, except es2015 which is future standard, these languages would not execute in browser, and for es2015 it's not supported evewhere. ReactJS also comes with a syntax called JSX which mix JS and HTML tags, so we'll have to transpile it as well. Babel will be a good guy for that task, and we'll use this time ES2015.
+You can now use languages like coffeescript, typescript, ES2015, which also come with syntax improvements. However, these languages will not execute in the browser, except for ES2015 which is the next version of javascript but still only partially supported. ReactJS also comes with a syntax called JSX which mix JS and HTML tags, so we'll have to transpile it as well. Babel will be a good guy for that task, and we'll use this time ES2015.
 
 It's time to open your IDE, If you dont have one try <a href="https://atom.io/">Atom</a>. It is lightweight and opensource and works well with JS. Dont forget to install JSX plugin !
 
@@ -31,7 +31,7 @@ npm init
 {% endhighlight %}
 Let the default values for this time :)
 
-* Next install the React libs, plus moment to deal with date format later :
+* Next install the React libraries, plus another one, "moment", to deal with date format later :
 {% highlight shell %}
 npm install --save react@15.3.1 react-dom@15.3.1 moment
 {% endhighlight %}
@@ -49,7 +49,7 @@ npm install –save-dev webpack express
 {% endhighlight %}
 
 
-At this point, package.json has been updated (with --save), and node dependencies installed in "node_modules" directory.
+At this point, package.json has been updated (with the --save argument), and node dependencies installed in "node_modules" directory.
 package.json must be added to version control so anyone can build your project.
 
 * A word about project structure, it has to be maven-compliant (keep in mind we have to build a portlet!) :
@@ -247,7 +247,7 @@ app.listen(port);
 {% endhighlight %}
 Note: you have to record real api responses in static files before (here you can pick in source project).
 
-* Before starting the server, we also want to start webpack in "watch mode" in order to rebuild on change. Add a "watch" script with the following commands in /package.json :
+* Before starting the server, we also want to start webpack in "watch mode" in order to be able to build again on any change. Add a "watch" script with the following commands in /package.json :
 {% highlight json %}
 "scripts": {
   ...
@@ -273,7 +273,7 @@ Look at the size... don't worry it is a not optimized yet !<br>
 The map file will map source lines from the generated bundle code to the original es2015 file. It will be downloaded by browser only when you open the debugger !
 Note : static files are not watched, you have to restart server. We could improve that by writing a simple gulp script for example, and add it to start script.
 
-* Now start the server 
+* Now start the server
 {% highlight shell %}
 npm start
 {% endhighlight %}
@@ -306,7 +306,7 @@ You're done for that part ! You could use this app outside Exoplatform but you'l
 
 ## Portlet Integration
 
-* To get started, you can pick resources in the sample available here : https://github.com/exo-samples/docs-samples/tree/4.3.x/portlet/js. It's a simple javax Portlet that forward to an index.jsp (the view of the portlet).
+* To get started, you can look at the source code here : https://github.com/exo-samples/docs-samples/tree/4.3.x/portlet/js. It's a simple javax Portlet that forward to an index.jsp (the view part of the portlet).
 
 * modify index.jsp and only declare a html fragment with "app" mount point :
 {% highlight jsp %}
@@ -315,7 +315,7 @@ You're done for that part ! You could use this app outside Exoplatform but you'l
 </div>
 {% endhighlight %}
 
-* open webapp/WEB-INF/gatein-resources.xml to declare the bundle.js as a js modules, and the stylesheet main.css :
+* open webapp/WEB-INF/gatein-resources.xml to declare both the bundle.js, as a JS module, and the main.css stylesheet :
 {% highlight xml %}
 <portlet>
   <name>reactsample</name>
@@ -388,7 +388,7 @@ mvn clean install -Pproduction
 
 # Incompatibility with the gatein minifier
 
-* You'll quickly notice that Non-minified version of React cant bear with gatein minifier (Google Closure)! <br>
+* You'll quickly notice that Non-minified version of React cant bear with gatein minifier (Uses the google closure minifier)! <br>
 Actually the only way to disable gatein minifier is running exo in dev mode... not great :)
 But there's weird thing : when you minify your bundle with "webpack -p", gatein minifier works !
 So the simplest solution is to use the minified version of our bundle.js with exo normal mode, and Non-minified in exo dev mode !
@@ -454,7 +454,7 @@ vendor-bundle.js.map  1.44 MB       1  [emitted]  vendor-bundle
 {% endhighlight %}
 
 
-* Then declare vendor-bundle.js as a shared module. To keep things simple, we declare it in our portlet, but you'd rather package to another war :
+* Then declare vendor-bundle.js as a shared module. To keep things simple, we declare it in our portlet, otherwise, you could package it into another war :
 {% highlight xml %}
 <module>
     <name>vendor</name>
