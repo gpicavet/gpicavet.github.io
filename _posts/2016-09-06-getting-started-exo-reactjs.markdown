@@ -28,6 +28,11 @@ Source code is available <a href="https://github.com/gpicavet/react-portlet">her
 
 * As said, the stack is based on Node. First <a href="https://nodejs.org/en/download/">Install</a> it on your system. It will come with npm, with which you can install js dependencies (works like maven).
 
+* Update npm first ! Current version of npm included in node install is 2.something... Dont use it :) Big improvement has been made in dependencies resolving : it uses flattened strucutre resulting in smaller disk usage and faster build 
+{% highlight shell %}
+npm install npm@latest -g
+{% endhighlight %}
+
 * Create a directory named "react-portlet" and generate a starting package.json file :
 {% highlight shell %}
 npm init
