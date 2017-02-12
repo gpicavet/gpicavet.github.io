@@ -95,9 +95,11 @@ interval: 5000
 </div>
 </div><!--.container-->
 
-<iframe id="ytplayer" type="text/html" width="640" height="360"
+<center>
+<iframe id="ytplayer" type="text/html"
   src="https://www.youtube.com/embed/vF_nzevWZAE?autoplay=0&origin=https://gpicavet.github.io"
   frameborder="0"></iframe>
+</center>
 
 ## Materials
 
