@@ -1,32 +1,163 @@
 ---
 layout: post
-title:  "Raspberry automatic car - part I"
+title:  "Robot car with Raspberry and Lego - part I"
 date:   2017-02-11 22:05:11 +0200
 categories: jekyll update
 ---
 
-![photo_1](/assets/raspicar/photo_1.jpg)
-![photo_2](/assets/raspicar/photo_2.jpg)
-![photo_3](/assets/raspicar/photo_3.jpg)
 
+<link href='//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css' rel='stylesheet'>
+<style>
+
+.carousel {
+margin-bottom: 0;
+padding: 0 40px 30px 40px;
+}
+
+.carousel-control {
+left: -12px;
+height: 40px;
+width: 40px;
+background: none repeat scroll 0 0 #222222;
+border: 4px solid #FFFFFF;
+border-radius: 23px 23px 23px 23px;
+margin-top: 90px;
+}
+.carousel-control.right {
+right: -12px;
+}
+
+.carousel-indicators {
+right: 50%;
+top: auto;
+bottom: -10px;
+margin-right: -19px;
+}
+
+.carousel-indicators li {
+background: #cecece;
+}
+
+.carousel-indicators .active {
+background: #428bca;
+}
+</style>
+<script type='text/javascript' src='//code.jquery.com/jquery-1.10.2.min.js'></script>
+<script type='text/javascript' src='//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js'></script>
+<script type='text/javascript'>$(document).ready(function() {
+$('#Carousel').carousel({
+interval: 5000
+})
+$('#Carousel2').carousel({
+interval: 5000
+})
+});
+</script>
+
+<div class="container">
+<div class="row">
+<div class="col-md-12">
+<div id="Carousel" class="carousel slide">
+
+<ol class="carousel-indicators">
+<li data-target="#Carousel" data-slide-to="0" class="active"></li>
+<li data-target="#Carousel" data-slide-to="1"></li>
+<li data-target="#Carousel" data-slide-to="2"></li>
+</ol>
+
+<!-- Carousel items -->
+<div class="carousel-inner">
+
+<div class="item active">
+<div class="row">
+<div class="col-md-12"><a href="#" class="thumbnail"><img src="/assets/raspicar/photo_1.jpg" alt="Image" style="max-width:100%;"></a></div>
+</div><!--.row-->
+</div><!--.item-->
+
+<div class="item">
+<div class="row">
+<div class="col-md-12"><a href="#" class="thumbnail"><img src="/assets/raspicar/photo_2.jpg" alt="Image" style="max-width:100%;"></a></div>
+</div><!--.row-->
+</div><!--.item-->
+
+<div class="item">
+<div class="row">
+<div class="col-md-12"><a href="#" class="thumbnail"><img src="/assets/raspicar/photo_3.jpg" alt="Image" style="max-width:100%;"></a></div>
+</div><!--.row-->
+</div><!--.item-->
+
+</div><!--.carousel-inner-->
+<a data-slide="prev" href="#Carousel" class="left carousel-control">‹</a>
+<a data-slide="next" href="#Carousel" class="right carousel-control">›</a>
+</div><!--.Carousel-->
+
+</div>
+</div>
+</div><!--.container-->
+
+<iframe id="ytplayer" type="text/html" width="640" height="360"
+  src="http://www.youtube.com/embed/vF_nzevWZAE?autoplay=0&origin=https://gpicavet.github.io"
+  frameborder="0"></iframe>
 
 ## Materials
-<style>
-  td {
-    border : 1px solid gray;
-  }
-</style>
-<table>
-<tr><td> A Raspberry pi 3          </td><td> <img src="/assets/raspicar/pi3.jpg"/> </td></tr>
-<tr><td> An Arduino UNO            </td><td> <img src="/assets/raspicar/arduino-uno.jpeg"/> </td></tr>
-<tr><td> 2 Nema 11 Stepper Motors  </td><td> <img src="/assets/raspicar/motor.jpg"/> </td></tr>
-<tr><td> 2 DRV8834 stepper drivers </td><td> <img src="/assets/raspicar/drv8834.jpeg"/> </td></tr>
-<tr><td> 2 axis couplers           </td><td> <img src="/assets/raspicar/coupler.jpg"/> </td></tr>
-<tr><td> 2 100µF capacitors        </td><td> </td></tr>
-<tr><td> a 10000mAh Li-ion USB Battery (2.4A max) </td><td> </td></tr>
-<tr><td> Several jumper wires      </td><td> </td></tr>
-<tr><td> a breadboard              </td><td> </td></tr>
-</table>
+
+<div class="container">
+<div class="row">
+<div class="col-md-12">
+<div id="Carousel2" class="carousel slide">
+
+<ol class="carousel-indicators">
+<li data-target="#Carousel2" data-slide-to="0" class="active"></li>
+<li data-target="#Carousel2" data-slide-to="1"></li>
+<li data-target="#Carousel2" data-slide-to="2"></li>
+</ol>
+
+<!-- Carousel items -->
+<div class="carousel-inner"  style="min-height:300px">
+
+<div class="item active">
+<div class="row">
+<div class="col-md-6"><a href="#" class="thumbnail"><img src="/assets/raspicar/pi3.jpg" alt="Image" style="max-width:100%;"></a>Raspberry Pi 3</div>
+<div class="col-md-6"><a href="#" class="thumbnail"><img src="/assets/raspicar/arduino-uno.jpeg" alt="Image" style="max-width:100%;"></a>Arduino Uno</div>
+</div><!--.row-->
+</div><!--.item-->
+
+<div class="item">
+<div class="row">
+<div class="col-md-6"><a href="#" class="thumbnail"><img src="/assets/raspicar/motor.jpg" alt="Image" style="max-width:100%;"></a>Nema stepper motor 11HS18-0674S (X2)</div>
+<div class="col-md-6"><a href="#" class="thumbnail"><img src="/assets/raspicar/drv8834.jpeg" alt="Image" style="max-width:100%;"></a>stepper driver Polulu DRV8834 (X2)</div>
+</div><!--.item-->
+</div><!--.row-->
+
+<div class="item">
+<div class="row">
+<div class="col-md-6"><a href="#" class="thumbnail"><img src="/assets/raspicar/coupler.jpg" alt="Image" style="max-width:100%;"></a>Axis Coupler (X2)</div>
+<div class="col-md-6"><a href="#" class="thumbnail"><img src="/assets/raspicar/capa.jpg" alt="Image" style="max-width:100%;"></a>100µF Capacitor (X2)</div>
+</div><!--.row-->
+</div><!--.item-->
+
+<div class="item">
+<div class="row">
+<div class="col-md-6"><a href="#" class="thumbnail"><img src="/assets/raspicar/battery.jpg" alt="Image" style="max-width:100%;"></a>10000mAh Li-Ion USB Battery</div>
+<div class="col-md-6"><a href="#" class="thumbnail"><img src="/assets/raspicar/jumpers.jpeg" alt="Image" style="max-width:100%;"></a>Jumper wirers</div>
+</div><!--.row-->
+</div><!--.item-->
+
+<div class="item">
+<div class="row">
+<div class="col-md-6"><a href="#" class="thumbnail"><img src="/assets/raspicar/breadboard.jpeg" alt="Image" style="max-width:100%;"></a>Mini Breadboard (X2)</div>
+</div><!--.row-->
+</div><!--.item-->
+
+</div><!--.carousel-inner-->
+<a data-slide="prev" href="#Carousel2" class="left carousel-control">‹</a>
+<a data-slide="next" href="#Carousel2" class="right carousel-control">›</a>
+</div><!--.Carousel-->
+
+</div>
+</div>
+</div><!--.container-->
+
 
 ## Schema
 ![Schema](/assets/raspicar/raspicar_v1_bb.png)
@@ -46,10 +177,11 @@ I used the Flask Library with python at server-side, and jquery at client-side
 ### video streaming
 I recycled an old USB Webcam
 I first tried ffmpeg and motion libraries but delay was too high (> 500ms).
-I ended up using mjpeg as decribed in this article :  
-https://jacobsalmela.com/2014/05/31/raspberry-pi-webcam-using-mjpg-streamer-over-internet/
+I ended up using mjpeg as decribed in this nice article <https://jacobsalmela.com/2014/05/31/raspberry-pi-webcam-using-mjpg-streamer-over-internet/>
 So it's not really video but image capture, so you are limited to 10 fps max. It's good enough and delay is much better (100ms).
 
 ## source code
+<https://github.com/gpicavet/raspicar>
 
-## Conclusion
+## what's next ?
+Next is really Challenging : make the car smarter :)
