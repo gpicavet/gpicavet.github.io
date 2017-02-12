@@ -1,0 +1,21 @@
+---
+layout: post
+title:  "Building a progressive web app on top of Exoplatform"
+date:   2016-10-27 22:05:11 +0200
+categories: jekyll update
+---
+
+Progressive Web Apps is a new type of application developed by Google. It is based on latest browser technologies that combines the best of mobile and web applications. Some hybrid app frameworks like Cordoba tried to unify these two worlds, with more or less success. But as a dev, you have to publish your app on a store, and as a user, you have to download it, which breaks your experience with a web site.
+
+Now any existing app -with no to minor refactor- could benefit from capabilities once reserved exclusively for native apps : offline access, notifications, homescreen install...
+
+As an example we'll dig up the react-portlet project and make the first progressive app of Exoplatform ! cool !
+
+
+
+
+## Conclusion
+So is Progressive web app outperforms mobile apps ? not yet :
+-You still don't have access to hardware like battery, bluetooth, sensors, or contact list
+-The latest API are only supported in Chrome
+But things are changing rapidly :)

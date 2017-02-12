@@ -1,0 +1,48 @@
+---
+layout: post
+title:  "Raspberry automatic car - part I"
+date:   2017-02-05 22:05:11 +0200
+categories: jekyll update
+---
+
+![photo_1](/assets/raspicar/photo_1.jpg)
+![photo_2](/assets/raspicar/photo_2.jpg)
+![photo_3](/assets/raspicar/photo_3.jpg)
+
+
+## Materials
+- A Raspberry pi 3
+- An Arduino UNO
+- 2 Nema 11 Stepper Motors
+- 2 DRV8834 stepper drivers
+- 2 axis couplers
+- 2 100µF capacitors
+- a 10000mAh Li-ion USB Battery (2.4A max)
+- Several jumper wires
+- a breadboard
+
+## Schema
+![Schema](/assets/raspicar/raspicar_v1_bb.png)
+
+## Motors and drivers
+I used Nema Bipolar Stepper motors because i needed precision and high couple.
+Each Stepper Motor is controled with a DRV8834 in order to simplify the arduino code and to safely limit current.
+
+## arduino part
+The program is using AccelStepper Library to drive the motors.
+
+## raspberry part
+
+### Web UI
+I used the Flask Library with python at server-side, and jquery at client-side
+
+### video streaming
+I recycled an old USB Webcam
+I first tried ffmpeg and motion libraries but delay was too high (> 500ms).
+I ended up using mjpeg as decribed in this article :  
+https://jacobsalmela.com/2014/05/31/raspberry-pi-webcam-using-mjpg-streamer-over-internet/
+So it's not really video but image capture, so you are limited to 10 fps max. It's good enough and delay is much better (100ms).
+
+## source code
+
+## Conclusion
