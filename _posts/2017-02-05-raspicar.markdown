@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Raspberry automatic car - part I"
-date:   2017-02-05 22:05:11 +0200
+date:   2017-02-11 22:05:11 +0200
 categories: jekyll update
 ---
 
@@ -11,15 +11,22 @@ categories: jekyll update
 
 
 ## Materials
-- A Raspberry pi 3
-- An Arduino UNO
-- 2 Nema 11 Stepper Motors
-- 2 DRV8834 stepper drivers
-- 2 axis couplers
-- 2 100µF capacitors
-- a 10000mAh Li-ion USB Battery (2.4A max)
-- Several jumper wires
-- a breadboard
+<style>
+  td {
+    border : 1px solid gray;
+  }
+</style>
+<table>
+<tr><td> A Raspberry pi 3          </td><td> <img src="/assets/raspicar/pi3.jpg"/> </td></tr>
+<tr><td> An Arduino UNO            </td><td> <img src="/assets/raspicar/arduino-uno.jpeg"/> </td></tr>
+<tr><td> 2 Nema 11 Stepper Motors  </td><td> <img src="/assets/raspicar/motor.jpg"/> </td></tr>
+<tr><td> 2 DRV8834 stepper drivers </td><td> <img src="/assets/raspicar/drv8834.jpeg"/> </td></tr>
+<tr><td> 2 axis couplers           </td><td> <img src="/assets/raspicar/coupler.jpg"/> </td></tr>
+<tr><td> 2 100µF capacitors        </td><td> </td></tr>
+<tr><td> a 10000mAh Li-ion USB Battery (2.4A max) </td><td> </td></tr>
+<tr><td> Several jumper wires      </td><td> </td></tr>
+<tr><td> a breadboard              </td><td> </td></tr>
+</table>
 
 ## Schema
 ![Schema](/assets/raspicar/raspicar_v1_bb.png)
