@@ -48,7 +48,7 @@ $('#Carousel').carousel({
 interval: 5000
 })
 $('#Carousel2').carousel({
-  interval: 60000
+  interval: 600000
 })
 });
 </script>
@@ -184,14 +184,14 @@ The components i used in this project. The overall costed nearly 150 € .
 ## Schema
 ![Schema](/assets/raspicar/raspicar_v1_bb.png)
 
+## Weight
+- Raspi Car weights 1200g . That is one beautiful baby :)
+
 ## Motors and drivers
 - I used two Nema Bipolar Stepper motors because i needed precision and high couple (see weight!).
 - I used some lego gears in order to provide even higher couple.
 - Each Stepper Motor is controled with a DRV8834 stepper board in order to simplify the arduino code and to safely limit current.
-- I tweaked the limit current as described on the Pololu Site, using Vref = Imax / 2. As Nema max current is 670mA, Vref of the driver should be 335mV. From now i can provide higher voltage to motors without damage.
-
-## Weight
-- Raspi Car weights 1200g . That is one beautiful baby :)
+- I tweaked the limit current as described on data sheet on the Pololu Site, using Vref = Imax / 2. As Nema max current is 670mA, Vref of the driver should be 335mV. From now i can provide higher voltage to motors without damage.
 
 # Software Part
 
