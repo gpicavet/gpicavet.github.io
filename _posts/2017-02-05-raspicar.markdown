@@ -48,6 +48,7 @@ $('#Carousel').carousel({
 interval: 5000
 })
 $('#Carousel2').carousel({
+  interval: 1000000
 })
 });
 </script>
