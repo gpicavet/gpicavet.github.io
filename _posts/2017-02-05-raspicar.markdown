@@ -1,10 +1,9 @@
 ---
 layout: post
-title:  "Robot car with Raspberry and Lego - part I"
+title:  "RaspiCAR : a robot car with Raspberry and Legos - part I"
 date:   2017-02-11 22:05:11 +0200
 categories: jekyll update
 ---
-
 
 <link href='//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css' rel='stylesheet'>
 <style>
@@ -54,6 +53,11 @@ interval: 5000
 });
 </script>
 
+<h2>
+I always wanted to build a robot car, just for fun, not to eradicate human race :) <br>
+The first step consisted in integrating the base components and providing manual control.
+</h2>
+
 <div class="container">
 <div class="row">
 <div class="col-md-12">
@@ -95,13 +99,19 @@ interval: 5000
 </div>
 </div><!--.container-->
 
+## a small video !
+
 <center>
 <iframe id="ytplayer" type="text/html"
   src="https://www.youtube.com/embed/vF_nzevWZAE?autoplay=0&origin=https://gpicavet.github.io"
   frameborder="0"></iframe>
 </center>
 
-## Materials
+# Hardware Part
+
+## Components
+
+The components i used in this project. The overall costed nearly 150 € 
 
 <div class="container">
 <div class="row">
@@ -148,6 +158,13 @@ interval: 5000
 <div class="item">
 <div class="row">
 <div class="col-md-6"><a href="#" class="thumbnail"><img src="/assets/raspicar/breadboard.jpeg" alt="Image" style="max-width:100%;"></a>Mini Breadboard (X2)</div>
+<div class="col-md-6"><a href="#" class="thumbnail"><img src="/assets/raspicar/webcam.jpeg" alt="Image" style="max-width:100%;"></a>An USB cam</div>
+</div><!--.row-->
+</div><!--.item-->
+
+<div class="item">
+<div class="row">
+<div class="col-md-6"><a href="#" class="thumbnail"><img src="/assets/raspicar/legos.jpg" alt="Image" style="max-width:100%;"></a>And Legos of course !</div>
 </div><!--.row-->
 </div><!--.item-->
 
@@ -165,25 +182,41 @@ interval: 5000
 ![Schema](/assets/raspicar/raspicar_v1_bb.png)
 
 ## Motors and drivers
-I used Nema Bipolar Stepper motors because i needed precision and high couple.
-Each Stepper Motor is controled with a DRV8834 in order to simplify the arduino code and to safely limit current.
+- I used two Nema Bipolar Stepper motors because i needed precision and high couple (see weight!).
+- Each Stepper Motor is controled with a DRV8834 stepper board in order to simplify the arduino code and to safely limit current.
+- I tweaked the limit current as described on the Pololu Site, using Vref = Imax / 2. As Nema max current is 670mA, Vref of the driver should be 335mV. From now i can provide higher voltage to motors without damage.
 
-## arduino part
-The program is using AccelStepper Library to drive the motors.
+## Weight
+- Raspi Car weights 1200g . That is one beautiful baby :)
 
-## raspberry part
+# Software Part
 
-### Web UI
-I used the Flask Library with python at server-side, and jquery at client-side
+## Arduino Side
+- Arduino Job consists in listening to commands on the USB port and drive the steering and propulsion motors
+- There are several ways to implement Arduino/Raspberry communication
+- The program is built and uploaded to Arduino with the IDE.
+
+## Raspberry Side
+- Raspberry Job consists in providing a Wifi communication, a web interface, and video streaming.
+
+### Web UI & communication layer
+- Web UI relies on Flask python Library on server-side, and jquery/ui on client-side
+- client and server communication rely on WebSocket and Flask-socketio library with Eventlet engine
+- python3 and flask are already bundled with raspbian distribution. But you need to manually install the socketio and eventlet  :
+{% highlight shell %}
+sudo pip3 install flask-socketio
+sudo pip3 install eventlet
+{% endhighlight %}
+
+
 
 ### video streaming
-I recycled an old USB Webcam
-I first tried ffmpeg and motion libraries but delay was too high (> 500ms).
-I ended up using mjpeg as decribed in this nice article <https://jacobsalmela.com/2014/05/31/raspberry-pi-webcam-using-mjpg-streamer-over-internet/>
-So it's not really video but image capture, so you are limited to 10 fps max. It's good enough and delay is much better (100ms).
+- I first tried ffmpeg and motion libraries but delay was too high (> 500ms).
+- I ended up using mjpeg streamer as decribed in this nice article <https://jacobsalmela.com/2014/05/31/raspberry-pi-webcam-using-mjpg-streamer-over-internet/>.
+It's more image capture than video streaming but framerate is good enough (5 to 10 fps) and delay is much better (100ms).
 
 ## source code
 <https://github.com/gpicavet/raspicar>
 
 ## what's next ?
-Next is really Challenging : make the car smarter :)
+Next Part is really Challenging : take the full power of the raspberry "brain" and make the car smarter :).
