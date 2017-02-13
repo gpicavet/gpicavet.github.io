@@ -111,7 +111,7 @@ The first step consisted in integrating the base components and providing manual
 
 ## Components
 
-The components i used in this project. The overall costed nearly 150 € 
+The components i used in this project. The overall costed nearly 150 € .
 
 <div class="container">
 <div class="row">
@@ -215,8 +215,11 @@ sudo pip3 install eventlet
 - I ended up using mjpeg streamer as decribed in this nice article <https://jacobsalmela.com/2014/05/31/raspberry-pi-webcam-using-mjpg-streamer-over-internet/>.
 It's more image capture than video streaming but framerate is good enough (5 to 10 fps) and delay is much better (100ms).
 
-## source code
-<https://github.com/gpicavet/raspicar>
+## source code & deploy
+- <https://github.com/gpicavet/raspicar>
+- deploy car.uno to Arduino
+- Then on Raspberry you have to start ./start_mjpeg.sh and ./raspicar.py 
+
 
 ## what's next ?
 Next Part is really Challenging : take the full power of the raspberry "brain" and make the car smarter :).
