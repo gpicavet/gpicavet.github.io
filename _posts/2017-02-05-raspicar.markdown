@@ -48,14 +48,13 @@ $('#Carousel').carousel({
 interval: 5000
 })
 $('#Carousel2').carousel({
-interval: 5000
 })
 });
 </script>
 
 <h2>
-I always wanted to build a robot car, just for fun, not to eradicate human race :) <br>
-The first step consisted in integrating the base components and providing manual control.
+I always wanted to build a robot car for fun (not to eradicate human race :)) <br>
+The first step consisted in integrating hardware components and providing manual control via a Web interface.
 </h2>
 
 <div class="container">
@@ -183,6 +182,7 @@ The components i used in this project. The overall costed nearly 150 € .
 
 ## Motors and drivers
 - I used two Nema Bipolar Stepper motors because i needed precision and high couple (see weight!).
+- I used some lego gears in order to provide even higher couple.
 - Each Stepper Motor is controled with a DRV8834 stepper board in order to simplify the arduino code and to safely limit current.
 - I tweaked the limit current as described on the Pololu Site, using Vref = Imax / 2. As Nema max current is 670mA, Vref of the driver should be 335mV. From now i can provide higher voltage to motors without damage.
 
@@ -193,8 +193,8 @@ The components i used in this project. The overall costed nearly 150 € .
 
 ## Arduino Side
 - Arduino Job consists in listening to commands on the USB port and drive the steering and propulsion motors
-- There are several ways to implement Arduino/Raspberry communication
-- The program is built and uploaded to Arduino with the IDE.
+- There are several ways to implement Arduino/Raspberry communication (I2C bus, SPI, Serial). I just choosed the easier :)
+- Driving motors is done via the AccelStepper library : <http://www.airspayce.com/mikem/arduino/AccelStepper/>. I tested hardware PWM but it didn't fit my need : you can only control one stepper and frequency is very limited. So i used this sofware library. CPU usage is good enough if you dont exceed 5000 steps/seconds.
 
 ## Raspberry Side
 - Raspberry Job consists in providing a Wifi communication, a web interface, and video streaming.
@@ -218,7 +218,7 @@ It's more image capture than video streaming but framerate is good enough (5 to 
 ## source code & deploy
 - <https://github.com/gpicavet/raspicar>
 - deploy car.uno to Arduino
-- Then on Raspberry you have to start ./start_mjpeg.sh and ./raspicar.py 
+- Then on Raspberry you have to start ./start_mjpeg.sh and ./raspicar.py
 
 
 ## what's next ?
