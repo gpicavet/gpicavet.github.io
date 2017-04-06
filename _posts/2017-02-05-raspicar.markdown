@@ -54,8 +54,10 @@ $('#Carousel2').carousel({
 </script>
 
 <h2>
-I always wanted to build a robot car for fun (not to eradicate human race :)) <br>
-The first step consisted in integrating hardware components and providing manual control via a Web interface.
+I always wanted to make my own robot to eradicate human race, but i've never had time :) 
+Why ? as a software engineer, hardware is obsiously more complex to debug and integrate than softwares. <br> But nowadays platforms like Raspeberry and Arduino greatly simplifies integration and prototyping (Of course it remains prototypes, you will never print optimized multi-layer board yourself, so you will love wires !). Making a humanoid robot is far too complex : if you want a basic moving robot a car is a lot simpler.
+I wanted to reuse some legos as well, because i initially thought it will be simpler (if you are a DIY addict it's not necessarilty true!)
+So this article show you the first part of this project, whose purpose was to practice hardware components integration and to provide some manual control via a Web interface.
 </h2>
 
 <div class="container">
@@ -185,9 +187,9 @@ The components i used in this project. The overall costed nearly 150 € .
 ![Schema](/assets/raspicar/raspicar_v1_bb.png)
 
 ## Why Legos ?
-- Because Lego is simple to use :)
-- Actually it was not so easy to integrate with motors ;)
-- for a lighter car, i could have used some plexiglas Chassis and 3D-printed components. Maybe for another project.
+- Because with Legos you can build complex things easily :)
+- Actually it's not so easy to integrate with motors not made by Lego corporation ;)
+- For a lighter car, i could have used some plexiglas Chassis and 3D-printed components. Maybe for another project.
 
 ## Why not Lego Mindstorms ?
 - I only used Lego Technic. You can already do cool things with Mindstorms, but i would have been limited for the next part. You can do even more cool things with custom components and Raspberry.
