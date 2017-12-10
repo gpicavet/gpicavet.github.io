@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "RaspiCAR : a robot car with Raspberry and Legos - part I"
+title:  "RaspiCAR : a robot car with Raspberry and Legos"
 date:   2017-02-11 22:05:11 +0200
 categories: jekyll update
 ---
