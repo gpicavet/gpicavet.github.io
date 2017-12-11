@@ -7,6 +7,24 @@ categories: jekyll update
 
 <script type='text/javascript' src="https://cdn.rawgit.com/gpicavet/sudoku-solver/master/solver.js"></script>
 
+ <style>
+     table input[type="text"] {
+    font-size:30px;
+}
+ </style>
+
+ <div id="board"></div>
+
+ <br>
+
+ <textarea id="message" cols="60"></textarea>
+
+ <br>
+
+ <button onclick="solve()">SOLVE</button>
+ <button onclick="clean()">CLEAR</button>
+
+ <script type='text/javascript'>
    var board = [
        ["8", "", "", "", "", "", "", "", ""],
        ["", "", "3", "6", "", "", "", "", ""],
