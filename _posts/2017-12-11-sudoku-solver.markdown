@@ -5,7 +5,7 @@ date:   2017-12-11 20:38:41 +0200
 categories: jekyll update
 ---
 
-<script type='text/javascript' src="https://raw.githubusercontent.com/gpicavet/sudoku-solver/master/solver.js"></script>
+<script type='text/javascript' src="https://cdn.rawgit.com/gpicavet/sudoku-solver/master/solver.js"></script>
 
 <textarea id="board" cols="60">
 </textarea>
