@@ -1,30 +1,47 @@
 ---
 layout: post
 title:  "Simple sudoku solver with constraint propagation"
-date:   2017-12-11 20:38:41 +0200
+date:   2017-16-11 20:38:41 +0200
 categories: jekyll update
 ---
 
 <script type='text/javascript' src="https://cdn.rawgit.com/gpicavet/sudoku-solver/master/solver.js"></script>
 
- <style>
-     table input[type="text"] {
-    font-size:30px;
-}
+<style>
+ table {
+  border-collapse:collapse;
+ }
+ table input[type="text"] {
+    font-size:24px;
+    width: 30px;
+    text-align: center;
+ }
+ td:nth-of-type(3n) {
+  border-right: 2px solid black;
+ }
+ td:last-of-type {
+  border-right: none;
+ }
+ tr:nth-of-type(3n) {
+  border-bottom: 2px solid black;
+ }
+ tr:last-of-type {
+  border-bottom: none;
+ } 
  </style>
 
- <div id="board"></div>
+<div id="board"></div>
 
- <br>
+<p><br /></p>
 
- <textarea id="message" cols="60"></textarea>
+<textarea id="message" cols="40"></textarea>
 
- <br>
+<p><br /></p>
 
- <button onclick="solve()">SOLVE</button>
- <button onclick="clean()">CLEAR</button>
+<p><button onclick="solve()">SOLVE</button>
+ <button onclick="clean()">CLEAR</button></p>
 
- <script type='text/javascript'>
+<script type="text/javascript">
    var board = [
        ["8", "", "", "", "", "", "", "", ""],
        ["", "", "3", "6", "", "", "", "", ""],
@@ -41,12 +58,12 @@ categories: jekyll update
 
    function renderTable(id, board) {
        var html = "";
-       html += "<table data-size=" + board.length + " style='font-size:20px'>";
+       html += "<table data-size=" + board.length +" >";
        for (var i = 0; i < board.length; i++) {
            html += "<tr>";
            for (var j = 0; j < board.length; j++) {
                html += "<td>";
-               html += "<input type='text' size=1 value='" + board[i][j] + "' id='cell_" + i + "_" + j + "' />"
+               html += "<input type='text' maxlength=1 size=1 value='" + board[i][j] + "' id='cell_" + i + "_" + j + "' />"
                html += "</td>";
            }
            html += "</tr>";
@@ -96,3 +113,4 @@ categories: jekyll update
        renderTable("#board", board);
 
    }
+</script>
