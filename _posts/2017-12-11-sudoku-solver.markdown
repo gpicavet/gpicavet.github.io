@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Simple sudoku solver with constraint propagation"
-date:   2017-16-11 20:38:41 +0200
+date:   2017-12-16 20:38:41 +0200
 categories: jekyll update
 ---
 
