@@ -5,6 +5,9 @@ date:   2017-16-11 20:38:41 +0200
 categories: jekyll update
 ---
 
+## source code
+https://github.com/gpicavet/sudoku-solver
+## demo
 <script type='text/javascript' src="https://cdn.rawgit.com/gpicavet/sudoku-solver/master/solver.js"></script>
 
 <style>
