@@ -8,6 +8,7 @@ categories: jekyll update
 ## source code
 https://github.com/gpicavet/sudoku-solver
 ## demo
+<script type='text/javascript' src="https://cdn.rawgit.com/gpicavet/sudoku-solver/master/solver.js"></script>
 <style>
  table {
   border-collapse:collapse;
