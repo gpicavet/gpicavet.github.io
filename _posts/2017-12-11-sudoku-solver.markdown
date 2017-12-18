@@ -5,6 +5,8 @@ date:   2017-12-16 20:38:41 +0200
 categories: jekyll update
 ---
 
+What's your favorite activity when you're bored and there's absolutely nothing else to do ? solving a sudoku ? No, it's much interesting to write a sudoku solver !
+
 Solving NxN Sudoku is known to be a NP-complete problem, but it can still be done in a few milliseconds in a vast majority of cases.
 Stop thinking about Brute-force search : even 9x9 grids would require seconds to solve !
 Basically, Sudoku is a constraints satisfaction problem and there's a much clever way to solve this : "Constraint propagation". In a way that mimics human reasoning.
@@ -17,7 +19,12 @@ So here is a simple program that first finds as much "lone single" as it can.
 When there's no more single, it finds the cell having the less possibilities and explores each of them. One of them is good, others are bad and create conflict. As we dont know in advance, we save the state so when a conflict is detected, we go back to that state and choose another digit. This technique is called "backtracking", and yes you have already done that on hard sudoku with your favorite eraser !;)
 It's a compromise between simplicity (it would require more code to implement other techniques) and performance. Even with one technique we can solve hardest sudoku in less than 100ms in javascript on a low end PC !
 
-Note : This constraint propagation algorithm is very special case of a more generic algorithm called "SAT" which uses CNF boolean expression reduction (and also a little backtracking).
+As a bonus, this one can solve 16x16 grids (with a little more milliseconds :) and could be extended easily to 25x25.
+
+So next, what about generating sudoku grids ? 
+Start thinking about how it can be done, maybe using a solver, maybe transforming existing, and how to make it unique !
+
+Note : This constraint propagation algorithm is very special case of a more generic algorithm called "SAT solvers" which use "CNF" boolean expression reduction (and also a little backtracking).
 
 
 ## source code
