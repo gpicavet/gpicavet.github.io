@@ -7,9 +7,9 @@ categories: jekyll update
 
 What's your favorite activity when you're bored and there's absolutely nothing else to do ? solving a sudoku ? No, it's much more interesting to write a sudoku solver !
 
-Solving NxN Sudoku is known to be a NP-complete problem, but it can still be done in a few milliseconds in a vast majority of cases.<br>
+Solving NxN Sudoku is known to be a [NP-complete problem](https://en.wikipedia.org/wiki/NP-completeness), but it can still be done in a few milliseconds in a vast majority of cases.<br>
 Stop thinking about Brute-force search : even 9x9 grids would require seconds to solve !<br>
-Basically, Sudoku is a constraints satisfaction problem (like the eight queens, magic squares, ...) and there's a much clever way to solve this : "Constraint propagation". In a way that mimics human reasoning.
+Basically, Sudoku is a [constraints satisfaction problem](https://en.wikipedia.org/wiki/Constraint_satisfaction_problem) (like the eight queens, magic squares, ...) and there's a much clever way to solve this : "Constraint propagation". In a way that mimics human reasoning.
 
 What you do as a human is first find a cell having a single candidate, set it, and do it again. Simply.<br>
 When you "set" a cell, you propagate a new constraint to neighboor cells (ie same row, same column, same block), and so decreasing the choices.<br>
@@ -18,7 +18,10 @@ Easy grids will solve only using this basic technique called "lone single", but 
 So here is a simple program that first finds as much "lone single" as it can.<br>
 When there's no more single, it finds the cell having the less candidates and explores each of them. One of them is good, others are bad and create conflict.<br>
 As we dont know in advance, we save the state so when a conflict is detected, we go back to that state and choose another candidate. This technique is called "backtracking", and yes you have already done that on hard sudoku with your favorite eraser !;)<br>
-It's a compromise between simplicity (it would require more code to implement other techniques) and performance. Even with one technique we can solve hardest sudoku in less than 100ms in javascript on a low end PC !
+
+I know it's not the first program to use this techniques and other sophisticated algorithms like the [Dancing Links](https://en.wikipedia.org/wiki/Dancing_Links) have a better time complexity. 
+It's a compromise between simplicity (it would require more code to implement other techniques) and performance. 
+Even a simple technique can dramatically reduce the search tree and speed up the solving of the hardest sudoku grids.
 
 As a bonus, this one can solve 16x16 grids (with a little more milliseconds :) and could be extended easily to 25x25.
 
