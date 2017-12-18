@@ -5,7 +5,7 @@ date:   2017-12-16 20:38:41 +0200
 categories: jekyll update
 ---
 
-What's your favorite activity when you're bored and there's absolutely nothing else to do ? solving a sudoku ? No, it's much interesting to write a sudoku solver !
+What's your favorite activity when you're bored and there's absolutely nothing else to do ? solving a sudoku ? No, it's much more interesting to write a sudoku solver !
 
 Solving NxN Sudoku is known to be a NP-complete problem, but it can still be done in a few milliseconds in a vast majority of cases.<br>
 Stop thinking about Brute-force search : even 9x9 grids would require seconds to solve !<br>
@@ -13,7 +13,7 @@ Basically, Sudoku is a constraints satisfaction problem (like the eight queens, 
 
 What you do as a human is first find a cell having a single choice, set it, and do it again. Simply.<br>
 When you "set" a cell, you propagate a new constraint to neighboor cells (ie same row, same column, same block), and so decreasing the choices.<br>
-Easy grids will solve only using this basic technique called "lone single", but there are other techniques like "hidden singles", "naked pairs", ... that can be used when there's no lone single or to speed up solving. (see here for a list : https://www.learn-sudoku.com/basic-techniques.html.)
+Easy grids will solve only using this basic technique called "lone single", but there are other techniques like "hidden singles", "naked pairs", ... that can be used when there's no lone single or to speed up solving. (see here for a list : <https://www.learn-sudoku.com/basic-techniques.html>.)
 
 So here is a simple program that first finds as much "lone single" as it can.<br>
 When there's no more single, it finds the cell having the less possibilities and explores each of them. One of them is good, others are bad and create conflict.<br>
@@ -23,13 +23,13 @@ It's a compromise between simplicity (it would require more code to implement ot
 As a bonus, this one can solve 16x16 grids (with a little more milliseconds :) and could be extended easily to 25x25.
 
 So next, what about generating sudoku grids ?<br>
-Start thinking about how it can be done, maybe using a solver, maybe transforming existing, and how to make it unique !
+Start thinking about how it can be done, maybe using a solver, maybe transforming an existing one, and how to make it unique !
 
 Note : This constraint propagation algorithm is very special case of a more generic algorithm called "SAT solvers" which use "CNF" boolean expression reduction (and also a little backtracking).
 
 
 ## source code
-https://github.com/gpicavet/sudoku-solver
+<https://github.com/gpicavet/sudoku-solver>
 ## demo
 <script type='text/javascript' src="https://cdn.rawgit.com/gpicavet/sudoku-solver/master/solver.js"></script>
 <style>
