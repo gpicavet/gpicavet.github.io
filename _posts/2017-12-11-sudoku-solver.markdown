@@ -7,21 +7,22 @@ categories: jekyll update
 
 What's your favorite activity when you're bored and there's absolutely nothing else to do ? solving a sudoku ? No, it's much interesting to write a sudoku solver !
 
-Solving NxN Sudoku is known to be a NP-complete problem, but it can still be done in a few milliseconds in a vast majority of cases.
-Stop thinking about Brute-force search : even 9x9 grids would require seconds to solve !
-Basically, Sudoku is a constraints satisfaction problem and there's a much clever way to solve this : "Constraint propagation". In a way that mimics human reasoning.
+Solving NxN Sudoku is known to be a NP-complete problem, but it can still be done in a few milliseconds in a vast majority of cases.<br>
+Stop thinking about Brute-force search : even 9x9 grids would require seconds to solve !<br>
+Basically, Sudoku is a constraints satisfaction problem (like the eight queens, magic squares, ...) and there's a much clever way to solve this : "Constraint propagation". In a way that mimics human reasoning.
 
-So what you do when you're bored and there's absolutely nothing else to do but solving a sudoku, is to first find the cell having a single choice, set it, and do it again. Simply.
-When you "set" a cell, you propagate a new constraint to neighboor cells (ie same row, same column, same block), and so decreasing the choices.
+What you do as a human is first find a cell having a single choice, set it, and do it again. Simply.<br>
+When you "set" a cell, you propagate a new constraint to neighboor cells (ie same row, same column, same block), and so decreasing the choices.<br>
 Easy grids will solve only using this basic technique called "lone single", but there are other techniques like "hidden singles", "naked pairs", ... that can be used when there's no lone single or to speed up solving. (see here for a list : https://www.learn-sudoku.com/basic-techniques.html.)
 
-So here is a simple program that first finds as much "lone single" as it can.
-When there's no more single, it finds the cell having the less possibilities and explores each of them. One of them is good, others are bad and create conflict. As we dont know in advance, we save the state so when a conflict is detected, we go back to that state and choose another digit. This technique is called "backtracking", and yes you have already done that on hard sudoku with your favorite eraser !;)
+So here is a simple program that first finds as much "lone single" as it can.<br>
+When there's no more single, it finds the cell having the less possibilities and explores each of them. One of them is good, others are bad and create conflict.<br>
+As we dont know in advance, we save the state so when a conflict is detected, we go back to that state and choose another digit. This technique is called "backtracking", and yes you have already done that on hard sudoku with your favorite eraser !;)<br>
 It's a compromise between simplicity (it would require more code to implement other techniques) and performance. Even with one technique we can solve hardest sudoku in less than 100ms in javascript on a low end PC !
 
 As a bonus, this one can solve 16x16 grids (with a little more milliseconds :) and could be extended easily to 25x25.
 
-So next, what about generating sudoku grids ? 
+So next, what about generating sudoku grids ?<br>
 Start thinking about how it can be done, maybe using a solver, maybe transforming existing, and how to make it unique !
 
 Note : This constraint propagation algorithm is very special case of a more generic algorithm called "SAT solvers" which use "CNF" boolean expression reduction (and also a little backtracking).
