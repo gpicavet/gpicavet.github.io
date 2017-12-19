@@ -5,6 +5,9 @@ date:   2017-12-16 20:38:41 +0200
 categories: jekyll update
 ---
 
+<script type='text/javascript' src="https://cdn.rawgit.com/gpicavet/sudoku-solver/master/solver.js"></script>
+<script type='text/javascript' src="/assets/sudoku-solver/solver-ui.js"></script>
+
 What's your favorite activity when you're bored and there's absolutely nothing else to do ? solving a sudoku ? No, it's much more interesting to write a sudoku solver !
 
 Solving NxN Sudoku is known to be a [NP-complete problem](https://en.wikipedia.org/wiki/NP-completeness), but it can still be done in a few milliseconds in a vast majority of cases.<br>
@@ -13,6 +16,28 @@ Basically, Sudoku is a [constraints satisfaction problem](https://en.wikipedia.o
 
 What you do as a human is first find a cell having a single candidate, set it, and do it again. Simply.<br>
 When you "set" a cell, you propagate a new constraint to neighboor cells (ie same row, same column, same block), and so decreasing the choices.<br>
+
+Look at the board below for a better understanding. Cell candidates are drawn with small digits. The small green "3" is a Lone Single, it means there's no other choice regarding to constraints. So we set this cell with "3" and remove "3" in the candidates of the same row, same column and same block in order to fit rules.
+<p>
+<div id="boardWithCandidates"></div>
+</p>
+
+<script type="text/javascript">
+ 
+   var boardWithCandidates =[
+       [[3,6,7], [3,7], 9, 4, 2, 1, [4,5,7,8], [5,6,7,8], [3,5,6,8]],
+       [8, 5, [3,6], 7, ['3p',9], [3], 1, 4, 2],
+       [2, 1, 4, 8, 6, [3,5], [3,5,7,9], [5,7,9], [3,5,9]],
+       [9, [2,'3p',4], 8, [1,2,'3p'], ['3g'], 7, 6, [1,5], [1,'3p',4,5]],
+       [5, 6, [1,3,7], [1,'3p'], 4, 8, [3,7,9], 2, [1,3,9]],
+       [[1,3,4,7], [2,3,4,7], [1,2,3,7], 9, 5, 6, [3,4,7,8], [1,7,8], [1,3,4,8]],
+       [[3,4,6,7], [3,4,7,8,9], [3,5,6,7], [3,5], 1, 2, [4,5,8,9], [5,6,8,9], [4,5,6,8,9]],
+       [[1,3,4,6], [2,3,4], [1,2,3,5,6], [3,5], 8, 9, [2,4,5], [1,5,6], 7],
+       [[1,7], [2,7,8,9], [1,2,5,7], 6, [7], 4, [2,5,8,9], 3, [1,5,8,9]]
+      ];
+   renderTableWithCandidates("#boardWithCandidates", boardWithCandidates);
+</script>
+
 Easy grids will solve only using this basic technique called "lone single", but there are other techniques like "hidden singles", "naked pairs", ... that can be used when there's no lone single or to speed up solving. (see here for a list : <https://www.learn-sudoku.com/basic-techniques.html>.)
 
 So here is a simple program that first finds as much "lone single" as it can.<br>
@@ -34,7 +59,7 @@ Note : This constraint propagation algorithm is very special case of a more gene
 ## source code
 <https://github.com/gpicavet/sudoku-solver>
 ## demo
-<script type='text/javascript' src="https://cdn.rawgit.com/gpicavet/sudoku-solver/master/solver.js"></script>
+
 <style>
  table {
   border-collapse:collapse;
@@ -86,6 +111,7 @@ Note : This constraint propagation algorithm is very special case of a more gene
 </p>
 
 <script type="text/javascript">
+ 
    var boards = {
     "easy":[
        ["3", "9", "2", "8", " ", " ", "6", "1", "4"],
@@ -131,86 +157,6 @@ Note : This constraint propagation algorithm is very special case of a more gene
        [" ", " ", " ", "D",  " ", "B", "8", "7",  " ", " ", " ", "E",  " ", "3", "A", " "]
     ]
   }
-
-   function renderTable(id, board, solved) {
-       var css="c"+board.length;
-       var html = " ";
-       html += "<table data-size=" + board.length +" >";
-       for (var i = 0; i < board.length; i++) {
-           html += "<tr class=\""+css+"\">";
-           for (var j = 0; j < board.length; j++) {
-
-               var iid = "cell_" + i + "_" + j;
-               var ivalue = board[i][j].trim();
-               var icss = "";
-               if(ivalue === "." && solved) {
-                 ivalue = solved[i][j];
-                 icss="solved"; 
-               }
-
-               html += "<td class=\""+css+"\">";
-               html += "<input type=\"text\" value=\"" + ivalue + "\" id=\""+iid+"\" maxlength=1 size=1 class=\""+icss+"\" />"
-               html += "</td>";
-           }
-           html += "</tr>";
-       }
-       html += "</table>";
-       document.querySelector(id).innerHTML = html;
-   }
-
-   function jsonFromTable(id) {
-       var size = document.querySelector(id + " table").getAttribute("data-size");
-       var regex = size === 9 ? /[1-9]/ : /[1-9A-G]/;
-       var b = [];
-       for (var i = 0; i < size; i++) {
-           var r = [];
-           b.push(r);
-           for (var j = 0; j < size; j++) {
-               v = document.querySelector("#cell_" + i + "_" + j).value;
-               if (! regex.test(v)) {
-                   v = ".";
-               }
-               r.push(v);
-           }
-       }
-       return b;
-   }
-
-   function boardselect() {
-      var boardtype = document.querySelector("#boardtype");
-      var boardname = boardtype.options[boardtype.selectedIndex].value;
-      var board = boards[boardname];
-      renderTable("#board",board, null);
-   }
-
-   function solve() {
-       var b = jsonFromTable("#board");
-       try {
-           var solver = new SudokuSolver();
-           var solved = solver.solve(b);
-           renderTable("#board", b, solved);
-           document.querySelector("#message").value = "Solved in " + solver.stats.time + " ms, " + solver.stats.tests + " tests, " + solver.stats.backtracks + " backtracks";
-       } catch (e) {
-           if (e === "invalid board")
-               document.querySelector("#message").value = "Invalid board!";
-           else
-               document.querySelector("#message").value = "error : " + e;
-       }
-   }
-
-   function clean() {
-       var size = document.querySelector("#board table").getAttribute("data-size");
-       var board=[];
-       for (var i = 0; i < size; i++) {
-           var row=[];
-           board.push(row);
-           for (var j = 0; j < size; j++) {
-               row.push(" ");
-           }
-       }
-       renderTable("#board", board, null);
-
-   }
 
    boardselect();
 </script>
