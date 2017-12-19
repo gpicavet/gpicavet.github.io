@@ -74,19 +74,19 @@ Note : This constraint propagation algorithm is very special case of a more gene
  }
  td.c9:nth-of-type(3n), 
  td.c16:nth-of-type(4n) {
-  border-right: 2px solid black;
+  border-right: 2px solid black !important;
  }
  td.c9:first-of-type,
  td.c16:first-of-type {
-  border-left: 2px solid black;
+  border-left: 2px solid black !important;
  }
  tr.c9:nth-of-type(3n), 
  tr.c16:nth-of-type(4n) {
-  border-bottom: 2px solid black;
+  border-bottom: 2px solid black !important;
  }
  tr.c9:first-of-type,
  tr.c16:first-of-type {
-  border-top: 2px solid black;
+  border-top: 2px solid black !important;
  } 
  </style>
 
