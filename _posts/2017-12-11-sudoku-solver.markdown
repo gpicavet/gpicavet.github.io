@@ -17,7 +17,7 @@ Basically, Sudoku is a [constraints satisfaction problem](https://en.wikipedia.o
 What you do as a human is first find a cell having a single candidate, set it, and do it again. Simply.<br>
 When you "set" a cell, you propagate a new constraint to neighboor cells (ie same row, same column, same block), and so decreasing the choices.<br>
 
-Look at the board below for a better understanding. Cell candidates are drawn with small digits. The small green "3" is a Lone Single, it means there's no other choice regarding to constraints. So we set this cell with "3" and remove "3" in the candidates of the same row, same column and same block in order to fit rules.
+Take a look at the board below for a better understanding. Cell candidates are drawn with small digits. Notice the small green "3", there's no other choice regarding to constraints. So we set this cell with "3" and remove "3" in the candidates of the same row, same column and same block in order to fit rules.
 <p>
 <div id="boardWithCandidates"></div>
 </p>
@@ -56,8 +56,6 @@ Start thinking about how it can be done, maybe using a solver, maybe transformin
 Note : This constraint propagation algorithm is very special case of a more generic algorithm called "SAT solvers" which use "CNF" boolean expression reduction (and also a little backtracking).
 
 
-## source code
-<https://github.com/gpicavet/sudoku-solver>
 ## demo
 
 <style>
@@ -109,6 +107,9 @@ Note : This constraint propagation algorithm is very special case of a more gene
  <button onclick="solve()">SOLVE</button>
  <button onclick="clean()">CLEAR</button>
 </p>
+
+## source code
+<https://github.com/gpicavet/sudoku-solver>
 
 <script type="text/javascript">
  
