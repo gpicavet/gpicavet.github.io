@@ -5,13 +5,14 @@ date:   2017-12-26 20:38:41 +0200
 categories: jekyll update
 ---
 
+WebGL 3D Earth data visualization built on [Three.js](https://threejs.org/)
 
 ## demo
 
-<style>
-  canvas { width: 500px; height: 500px }
-</style>
-<script type='text/javascript' src="https://cdn.rawgit.com/gpicavet/earth-chart/master/public/js/app.js"></script>
+a demo with country population bar chart  
+<https://gpicavet.github.io/assets/earth-viz/test.html>
+
+![](/assets/earth-viz/earth-viz.png)
 
 ## source code
 <https://github.com/gpicavet/earth-chart>
