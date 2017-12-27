@@ -8,9 +8,20 @@
 	</head>
 	<body>
 		<div id="chart"></div>
-		<script src="https://cdn.rawgit.com/gpicavet/earth-chart/0.1/public/js/app.js"></script>
+		<script src="https://cdn.rawgit.com/gpicavet/earth-chart/0.2/public/js/app.js"></script>
 		<script>
-			App.renderEarth('/assets/countries-world.json', document.querySelector('#chart'), window.innerWidth*0.8, window.innerWidth*0.8*9/16);
+			var countryByAbbreviation={};
+			var countryData={};//data by iso2 code
+
+			fetch('/assets/data/country-by-abbreviation.json')
+   			.then(function(res) {return res.json();})
+			.then(function(data) {data.forEach(function(el) {countryByAbbreviation[el.country]=el.abbreviation});})
+			.then(function() {return fetch('/assets/data/country-by-population.json');})
+			.then(function(res) {return res.json();})
+			.then(function(data) {data.forEach(function(el) {countryData[countryByAbbreviation[el.country]]=el.population});})
+		    	.then(function() {
+				App.renderEarth('/assets/data/countries-world.json', countryData, document.querySelector('#chart'), window.innerWidth, window.innerHeight);
+			});			
 		</script>
 	</body>
 </html>
