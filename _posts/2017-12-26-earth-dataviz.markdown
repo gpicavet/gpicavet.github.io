@@ -9,8 +9,11 @@ WebGL 3D Earth data visualization built on [Three.js](https://threejs.org/)
 
 ## demo
 
-a demo with country population bar chart  
+a demo with country by population :
 <https://gpicavet.github.io/assets/earth-viz/test.html>
+
+Use mouse drag to rotate and wheel to zoom in/out
+
 
 ![](/assets/earth-viz/earth-viz.png)
 
