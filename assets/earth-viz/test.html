@@ -8,20 +8,23 @@
 	</head>
 	<body>
 		<div id="chart"></div>
-		<script src="https://cdn.rawgit.com/gpicavet/earth-chart/0.2/public/js/app.js"></script>
+		<script src="https://cdn.rawgit.com/gpicavet/earth-chart/0.3/public/js/app.js"></script>
 		<script>
 			var countryByAbbreviation={};
 			var countryData={};//data by iso2 code
 
-			fetch('data/country-by-abbreviation.json')
-   			.then(function(res) {return res.json();})
-			.then(function(data) {data.forEach(function(el) {countryByAbbreviation[el.country]=el.abbreviation});})
-			.then(function() {return fetch('data/country-by-population.json');})
-			.then(function(res) {return res.json();})
-			.then(function(data) {data.forEach(function(el) {countryData[countryByAbbreviation[el.country]]=el.population});})
-		    	.then(function() {
-				App.renderEarth('data/countries-world.json', countryData, document.querySelector('#chart'), window.innerWidth, window.innerHeight);
-			});			
+			function fetchJSON(uri) {
+				return fetch(uri)
+   					.then(function(res) {return res.json();})
+			}
+
+			fetchJSON('data/country-by-abbreviation.json')
+	    		.then(function(data) {data.forEach(function(el) {countryByAbbreviation[el.country]=el.abbreviation});})
+			.then(function() {return fetchJSON('data/country-by-population.json');})
+		        .then(function(data) {data.forEach(function(el) {countryData[countryByAbbreviation[el.country]]=el.population/1000000000});})
+            		.then(function() {
+               			App.renderEarth('data/countries-world.json', countryData, document.querySelector('#chart'), window.innerWidth, window.innerHeight);
+	    		});			
 		</script>
 	</body>
 </html>
