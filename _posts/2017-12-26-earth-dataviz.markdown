@@ -15,7 +15,7 @@ This demo shows the country by population :
 Drag your mouse to rotate and use the wheel to zoom in/out !
 
 
-[![](/assets/earth-viz/earth-viz.png)](<https://gpicavet.github.io/assets/earth-viz/test.html>)
+[![](/assets/earth-viz/earth-viz.jpg)](<https://gpicavet.github.io/assets/earth-viz/test.html>)
 
 ## source code
 <https://github.com/gpicavet/earth-chart>
