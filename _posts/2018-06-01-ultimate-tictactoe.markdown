@@ -1,4 +1,3 @@
-
 ---
 layout: post
 title:  "React Native Ultimate Tictactoe"
