@@ -12,8 +12,11 @@ The UI code has been bootstraped from excellent library <https://github.com/neco
 The IA is a javascript version of my original C code developed for the Coding Game Challenge.
 It is based on the Monte Carlo Tree Search Algorithm and is doing pretty well :)
 
-## demo
+## web demo
 <https://gpicavet.github.io/assets/ultimate-tictactoe/index.html>
+
+## expo
+https://expo.io/@grisha/ultimate-tictactoe
 
 ## source code
 <https://github.com/gpicavet/ultimate-tictactoe>
