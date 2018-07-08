@@ -13,7 +13,7 @@ The IA is a javascript version of my original C code developed for a Coding Game
 It is based on the Monte Carlo Tree Search Algorithm and is doing pretty well :)
 
 ## web demo
-<iframe src='https://gpicavet.github.io/assets/ultimate-tictactoe/index.html' frameborder="0" allowfullscreen ></iframe>
+<iframe width='500px' height='500px' src='https://gpicavet.github.io/assets/ultimate-tictactoe/index.html' frameborder="0" allowfullscreen ></iframe>
  
 
 ## native app
