@@ -5,7 +5,7 @@ date:   2017-12-16 20:38:41 +0200
 categories: jekyll update
 ---
 
-<script type='text/javascript' src="https://cdn.rawgit.com/gpicavet/sudoku-solver/master/solver.js"></script>
+<script type='text/javascript' src="https://cdn.jsdelivr.net/gh/gpicavet/sudoku-solver/solver.js"></script>
 <script type='text/javascript' src="/assets/sudoku-solver/solver-ui.js"></script>
 
 What's your favorite activity when you're bored and there's absolutely nothing else to do ? solving a sudoku ? No, it's much more interesting to write a sudoku solver !
