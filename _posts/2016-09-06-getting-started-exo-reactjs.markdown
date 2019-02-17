@@ -7,13 +7,15 @@ categories: jekyll update
 
 Here is the first post of -i hope- many posts dedicated to web development !
 
-In this article I would like to share an experience with <a href="https://community.exoplatform.com">Exoplatform portal</a> and ReactJS : you'll learn how to set up a simple reactjs and nodejs development stack, build a standalone app, and then package to a portlet.
+In this article I would like to share an experience with <a href="https://community.exoplatform.com">Exoplatform portal</a> and ReactJS
 
 Exoplatform comes with a frontend portlet framework called Juzu to build interactive client-side UI, but the platform allows you to use the technologies you are confortable with .
 My organization recently modernized its web development stack with React as a main component. So when we started our intranet project, we decided to use it in portlet development as well.
 If you dont know React, take a look at <a href="https://facebook.github.io/react/">the site</a> first. I'm not here to advocate React, but it's a really good tool to manage complex UI and to easily reuse components accross applications.
 
-But don't adventure in heavy javascript development without a good stack or you'll bite the dust ! The main reason is that javascript unlike java, doesn't have a statically, strongly type system, nor a module system. Fortunately some standards has emerged from the mess since a few years !
+You're still there ?! OK so let's learn how to set up a simple reactjs and nodejs development stack, build a standalone app, and then package to a portlet.
+
+But don't adventure in javascript development without a goddamn stack or it's going to suck ! The main reason is that javascript unlike java doesn't have a statically strongly type system, nor a module system. Fortunately some standards has emerged from the mess since a few years !
 You can now use any "high level" language like coffeescript, typescript, ES2015 (ex-ES6). However, these languages will not execute in the browser, except for ES2015 which is the next version of javascript but still only partially supported. So you have to  "transpile" these languages to a good old "ES5" syntax.
 ReactJS also comes with a syntax called JSX which mix JS and HTML tags, so we'll have to transpile it as well.
 Babel will be a good guy for transpiling task, and we'll use this time ES2015.
