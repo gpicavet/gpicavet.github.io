@@ -11,7 +11,7 @@ The main objective of this project is to train an Agent to achieve the best poss
 
 The Agent is trained using a Deep Q-network (DQN), a Q-Learning variant based on a neural network to approximate Q function, when the number of possible states becomes too big to fit in a Q table.
 
-<img src="https://github.com/gpicavet/snake_ai/raw/master/assets/tetris.gif" alt="screencast" width="400"/>
+<img src="https://github.com/gpicavet/tetris_ai/raw/master/assets/tetris.gif" alt="screencast" width="400"/>
 
 
 ## description
